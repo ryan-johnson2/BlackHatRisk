@@ -1,6 +1,6 @@
 #library dependencies
-import sys
 from PyQt4 import QtGui
+import networkBuildArea
 
 class MainFrame(QtGui.QMainWindow):
     """Creates the main frame of the GUI  which will contain
@@ -55,9 +55,21 @@ class MainFrame(QtGui.QMainWindow):
         simulateAction.setStatusTip('Simulate Network')
         analyzeMenu.addAction(simulateAction)
 
+        #create the main widget with a grid layout
+        mainWidget = QtGui.QWidget()
+        gridLayout = QtGui.QGridLayout()
+        mainWidget.setLayout(gridLayout)
+
+        #create widgets and add them to the layout
+        networkBuild = networkBuildArea.NetworkBuildArea()
+        gridLayout.addWidget(networkBuild, 0, 1)
+        
+        #set the main widget as the cental application widget
+        self.setCentralWidget(mainWidget)
+
         #set the window options
         self.setWindowTitle("Black Hat Risk")
-        self.setGeometry(500, 500, 300, 300)
+        self.setGeometry(200, 50, 650, 650)
         self.setWindowIcon(QtGui.QIcon('../img/blackhat.png'))
 
         #show the UI
