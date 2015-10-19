@@ -40,6 +40,7 @@ class MainFrame(QtGui.QMainWindow):
         #add menus to menu bar
         fileMenu = menu.addMenu('&File')
         analyzeMenu = menu.addMenu('&Analyze')
+        optionsMenu = menu.addMenu('&Options')
 
         #set exit actions and add to file menu
         exitAction = QtGui.QAction('&Exit', self)        
@@ -60,15 +61,35 @@ class MainFrame(QtGui.QMainWindow):
         openAction.setStatusTip('Open file')
         fileMenu.addAction(openAction)
 
-        #set the test action and add to analyze menu
-        testAction = QtGui.QAction('&Test Network', self)        
-        testAction.setStatusTip('Test Network')
-        analyzeMenu.addAction(testAction)
+        #set the evaluate network action and add to analyze menu
+        evalNetAction = QtGui.QAction('&Evaluate Network', self)        
+        evalNetAction.setStatusTip('Evaluate Network')
+        analyzeMenu.addAction(evalNetAction)
 
-        #set the simulate action and add to analyze menu
-        simulateAction = QtGui.QAction('&Simulate Network', self)        
-        simulateAction.setStatusTip('Simulate Network')
-        analyzeMenu.addAction(simulateAction)
+        #set the evaluate link and add to analyze
+        evalLinkAction = QtGui.QAction('&Evaluate Link', self)        
+        evalLinkAction.setStatusTip('Evaluate Link')
+        analyzeMenu.addAction(evalLinkAction)
+
+        #set the simulate least risk route action and add to analyze menu
+        simulateLRRAction = QtGui.QAction('&Simulate Least Risk Route', self)        
+        simulateLRRAction.setStatusTip('Simulate Least Risk Route')
+        analyzeMenu.addAction(simulateLRRAction)
+
+        #set the simulate random route action and add to analyze menu
+        simulateRandAction = QtGui.QAction('&Simulate Random Route', self)        
+        simulateRandAction.setStatusTip('Simulate Random Route')
+        analyzeMenu.addAction(simulateRandAction)
+
+        #set the settings action and add to options
+        settingsAction = QtGui.QAction('&Settings', self)        
+        settingsAction.setStatusTip('Settings')
+        optionsMenu.addAction(settingsAction)
+
+        #set the help action and add to options
+        helpAction = QtGui.QAction('&Help', self)        
+        helpAction.setStatusTip('Help')
+        optionsMenu.addAction(helpAction)
 
 
     def createLayout(self):
