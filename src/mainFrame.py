@@ -19,6 +19,21 @@ class MainFrame(QtGui.QMainWindow):
         #set the status
         self.statusBar().showMessage("Ready")
 
+        #set the window options
+        self.setWindowTitle("Black Hat Risk")
+        self.setGeometry(200, 50, 650, 650)
+        self.setWindowIcon(QtGui.QIcon('../img/blackhat.png'))
+
+        #create the drop down menus
+        self.createMenu()
+
+        #create layout and add widgets
+        self.createLayout()      
+
+        #show the UI
+        self.show()
+
+    def createMenu(self):
         #create menu bar
         menu = self.menuBar()
 
@@ -55,6 +70,8 @@ class MainFrame(QtGui.QMainWindow):
         simulateAction.setStatusTip('Simulate Network')
         analyzeMenu.addAction(simulateAction)
 
+
+    def createLayout(self):
         #create the main widget with a grid layout
         mainWidget = QtGui.QWidget()
         gridLayout = QtGui.QGridLayout()
@@ -67,10 +84,3 @@ class MainFrame(QtGui.QMainWindow):
         #set the main widget as the cental application widget
         self.setCentralWidget(mainWidget)
 
-        #set the window options
-        self.setWindowTitle("Black Hat Risk")
-        self.setGeometry(200, 50, 650, 650)
-        self.setWindowIcon(QtGui.QIcon('../img/blackhat.png'))
-
-        #show the UI
-        self.show()
