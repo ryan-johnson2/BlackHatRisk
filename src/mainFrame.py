@@ -1,6 +1,7 @@
 #library dependencies
 from PyQt4 import QtGui
 import networkBuildArea
+import dropDownMenus
 
 class MainFrame(QtGui.QMainWindow):
     """Creates the main frame of the GUI  which will contain
@@ -97,6 +98,10 @@ class MainFrame(QtGui.QMainWindow):
         mainWidget = QtGui.QWidget()
         gridLayout = QtGui.QGridLayout()
         mainWidget.setLayout(gridLayout)
+
+        #create the drop down menus
+        dropDowns = dropDownMenus.DropDownMenu()
+        gridLayout.addWidget(dropDowns, 0, 0)
 
         #create widgets and add them to the layout
         networkBuild = networkBuildArea.NetworkBuildArea()
