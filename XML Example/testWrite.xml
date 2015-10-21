@@ -1,0 +1,18 @@
+<network>
+    <links>
+        <link1 name="Link1">
+            <protocol>Email</protocol>
+            <risk>5</risk>
+            <node1>Smith</node1>
+            <node2>Jane</node2>
+        </link1>
+    </links>
+    <nodes>
+        <node1 name="Bob">
+            <storage>Cell Phone</storage>
+        </node1>
+        <node2 name="Jane">
+            <storage>paper</storage>
+        </node2>
+    <node3 name="Smith"><storage>Harddrive</storage></node3></nodes>
+</network>
