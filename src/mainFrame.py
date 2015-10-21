@@ -1,7 +1,7 @@
-#library dependencies
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtCore
 import networkBuildArea
 import dropDownMenus
+import networkItemsTree
 
 class MainFrame(QtGui.QMainWindow):
     """Creates the main frame of the GUI  which will contain
@@ -94,19 +94,19 @@ class MainFrame(QtGui.QMainWindow):
 
 
     def createLayout(self):
-        #create the main widget with a grid layout
-        mainWidget = QtGui.QWidget()
-        gridLayout = QtGui.QGridLayout()
-        mainWidget.setLayout(gridLayout)
-
-        #create the drop down menus
-        dropDowns = dropDownMenus.DropDownMenu()
-        gridLayout.addWidget(dropDowns, 0, 0)
-
-        #create widgets and add them to the layout
+        #create widgets
+        netTree = networkItemsTree.NetworkItemsTree()
         networkBuild = networkBuildArea.NetworkBuildArea()
-        gridLayout.addWidget(networkBuild, 0, 1)
+
+        #create splitter which allos resizing
+        splitter = QtGui.QSplitter(QtCore.Qt.Horizontal)
+
+        #add widgets to splitter
+        splitter.addWidget(netTree)
+        splitter.addWidget(networkBuild)
+
+        splitter.setSizes([50,300])
         
-        #set the main widget as the cental application widget
-        self.setCentralWidget(mainWidget)
+        #set splitter as the cental application widget
+        self.setCentralWidget(splitter)
 
