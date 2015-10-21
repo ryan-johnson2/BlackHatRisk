@@ -22,7 +22,7 @@ class MainFrame(QtGui.QMainWindow):
 
         #set the window options
         self.setWindowTitle("Black Hat Risk")
-        self.setGeometry(200, 50, 650, 650)
+        self.setGeometry(50, 50, 900, 900)
         self.setWindowIcon(QtGui.QIcon('../img/blackhat.png'))
 
         #create the drop down menus
@@ -43,13 +43,6 @@ class MainFrame(QtGui.QMainWindow):
         analyzeMenu = menu.addMenu('&Analyze')
         optionsMenu = menu.addMenu('&Options')
 
-        #set exit actions and add to file menu
-        exitAction = QtGui.QAction('&Exit', self)        
-        exitAction.setShortcut('Ctrl+Q')
-        exitAction.setStatusTip('Exit application')
-        exitAction.triggered.connect(QtGui.qApp.quit)
-        fileMenu.addAction(exitAction) 
-
         #set save actions and add to file menu
         saveAction = QtGui.QAction('&Save', self)        
         saveAction.setShortcut('Ctrl+S')
@@ -61,6 +54,19 @@ class MainFrame(QtGui.QMainWindow):
         openAction.setShortcut('Ctrl+O')
         openAction.setStatusTip('Open file')
         fileMenu.addAction(openAction)
+
+        #set new actions and add to file menu
+        newAction = QtGui.QAction('&New', self)        
+        newAction.setShortcut('Ctrl+N')
+        newAction.setStatusTip('New file')
+        fileMenu.addAction(newAction)
+
+        #set exit actions and add to file menu
+        exitAction = QtGui.QAction('&Exit', self)        
+        exitAction.setShortcut('Ctrl+Q')
+        exitAction.setStatusTip('Exit application')
+        exitAction.triggered.connect(QtGui.qApp.quit)
+        fileMenu.addAction(exitAction)
 
         #set the evaluate network action and add to analyze menu
         evalNetAction = QtGui.QAction('&Evaluate Network', self)        
