@@ -1,0 +1,12 @@
+Comparison of XML vs. SQL
+
+Both will work as a form of a database
+
+SQL is a simple database format that will allow easy insertions of information and editing of information.
+SQL is commonly used as a database format and most users are comfortable with using SQL and Python has many easy tools to interact with SQL
+However, a SQL database is a large file, which requires additional programs to use.  Transferring a SQL database can be tricky due to the size.
+Additionally, the creation of a network in SQL would result in a large amount of tables and fields within the database
+
+XML as a database would be much easier to use for our database.  Using the flat format of the XML file would allow for easy transfer of the network to another user.  XML is just as easy to edit as SQL, and Python has easy to use, built in libraries to handle XML.  XML allows the user to build the network and view the network, in a much easier to understand format.
+
+With these considerations in mind, we will use XML as a database for the application.
