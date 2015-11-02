@@ -2,6 +2,7 @@ from PyQt4 import QtGui, QtCore
 import networkBuildArea
 import dropDownMenus
 import networkItemsTree
+import nxGraph
 
 class MainFrame(QtGui.QMainWindow):
     """Creates the main frame of the GUI  which will contain
@@ -102,7 +103,8 @@ class MainFrame(QtGui.QMainWindow):
     def createLayout(self):
         #create widgets
         netTree = networkItemsTree.NetworkItemsTree()
-        networkBuild = networkBuildArea.NetworkBuildArea()
+        #networkBuild = networkBuildArea.NetworkBuildArea()
+        networkBuild = nxGraph.StaticCanvas()
 
         #create splitter which allos resizing
         splitter = QtGui.QSplitter(QtCore.Qt.Horizontal)
