@@ -1,1 +1,0 @@
-<network><links><link0 name="John'sPhone"><protocol>GSM</protocol><node1>Bud</node1><node2>BillyBobJoe</node2></link0></links><nodes><node0 name="Bud"><storage>harddisk</storage></node0></nodes></network>
