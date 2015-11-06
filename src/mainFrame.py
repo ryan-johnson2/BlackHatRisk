@@ -26,12 +26,27 @@ class MainFrame(QtGui.QMainWindow):
         self.setGeometry(50, 50, 900, 900)
         self.setWindowIcon(QtGui.QIcon('../img/blackhat.png'))
 
+        #create layout and add widgets
+        #create widgets
+        self.networkBuild = nxGraph.GraphCanvas()
+        self.netTree = networkItemsTree.NetworkItemsTree(self.networkBuild)
+        
+
+        #create splitter which allos resizing
+        splitter = QtGui.QSplitter(QtCore.Qt.Horizontal)
+
+        #add widgets to splitter
+        splitter.addWidget(self.netTree)
+        splitter.addWidget(self.networkBuild)
+
+        splitter.setSizes([50,300])
+        
+        #set splitter as the cental application widget
+        self.setCentralWidget(splitter) 
+
         #create the drop down menus
         self.createMenu()
-
-        #create layout and add widgets
-        self.createLayout()      
-
+     
         #show the UI
         self.show()
 
@@ -54,12 +69,14 @@ class MainFrame(QtGui.QMainWindow):
         openAction = QtGui.QAction('&Open', self)        
         openAction.setShortcut('Ctrl+O')
         openAction.setStatusTip('Open file')
+        openAction.triggered.connect(lambda: self.networkBuild.addNode("Node"))
         fileMenu.addAction(openAction)
 
         #set new actions and add to file menu
         newAction = QtGui.QAction('&New', self)        
         newAction.setShortcut('Ctrl+N')
         newAction.setStatusTip('New file')
+        newAction.triggered.connect(lambda: self.networkBuild.addNode("Node1"))
         fileMenu.addAction(newAction)
 
         #set exit actions and add to file menu
@@ -100,21 +117,5 @@ class MainFrame(QtGui.QMainWindow):
         optionsMenu.addAction(helpAction)
 
 
-    def createLayout(self):
-        #create widgets
-        netTree = networkItemsTree.NetworkItemsTree()
-        #networkBuild = networkBuildArea.NetworkBuildArea()
-        networkBuild = nxGraph.StaticCanvas()
-
-        #create splitter which allos resizing
-        splitter = QtGui.QSplitter(QtCore.Qt.Horizontal)
-
-        #add widgets to splitter
-        splitter.addWidget(netTree)
-        splitter.addWidget(networkBuild)
-
-        splitter.setSizes([50,300])
         
-        #set splitter as the cental application widget
-        self.setCentralWidget(splitter)
 
