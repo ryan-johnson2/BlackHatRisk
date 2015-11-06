@@ -1,8 +1,7 @@
 from PyQt4 import QtGui, QtCore
-import networkBuildArea
-import dropDownMenus
 import networkItemsTree
 import nxGraph
+import edgeDialog
 
 class MainFrame(QtGui.QMainWindow):
     """Creates the main frame of the GUI  which will contain
@@ -57,6 +56,7 @@ class MainFrame(QtGui.QMainWindow):
         #add menus to menu bar
         fileMenu = menu.addMenu('&File')
         analyzeMenu = menu.addMenu('&Analyze')
+        edgeMenu = menu.addMenu('&Edge')
         optionsMenu = menu.addMenu('&Options')
 
         #set save actions and add to file menu
@@ -69,14 +69,12 @@ class MainFrame(QtGui.QMainWindow):
         openAction = QtGui.QAction('&Open', self)        
         openAction.setShortcut('Ctrl+O')
         openAction.setStatusTip('Open file')
-        openAction.triggered.connect(lambda: self.networkBuild.addNode("Node"))
         fileMenu.addAction(openAction)
 
         #set new actions and add to file menu
         newAction = QtGui.QAction('&New', self)        
         newAction.setShortcut('Ctrl+N')
         newAction.setStatusTip('New file')
-        newAction.triggered.connect(lambda: self.networkBuild.addNode("Node1"))
         fileMenu.addAction(newAction)
 
         #set exit actions and add to file menu
@@ -115,6 +113,20 @@ class MainFrame(QtGui.QMainWindow):
         helpAction = QtGui.QAction('&Help', self)        
         helpAction.setStatusTip('Help')
         optionsMenu.addAction(helpAction)
+
+        addEdgeAction = QtGui.QAction('&Add', self)        
+        addEdgeAction.setStatusTip('Add Edge')
+        addEdgeAction.triggered.connect(lambda: self.getNewEdge())
+        edgeMenu.addAction(addEdgeAction)
+
+    def addEdge(self, nodes):
+        self.networkBuild.addEdge(nodes)
+
+    def getNewEdge(self):
+        nodes, ok = edgeDialog.EdgeDialog.retNodes()
+        if ok:
+            self.addEdge(nodes)
+
 
 
         
