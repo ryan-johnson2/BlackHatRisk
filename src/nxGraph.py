@@ -29,6 +29,9 @@ class GraphCanvas(FigureCanvas):
         self.labels = {}
         self.edgeLabels = {}
 
+        #images for nodes
+        self.routerImg = '../img/router.png'
+
     def clearAll(self):
         self.fig.clear()
         self.axes = self.fig.add_subplot(111)

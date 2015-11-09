@@ -140,50 +140,59 @@ class MainFrame(QtGui.QMainWindow):
         modifyMenu.addAction(removeEdgeAction)
 
     def saveFile(self):
-        saveF = QtGui.QFileDialog.getSaveFileName(self, "Save File")
+        saveF = QtGui.QFileDialog.getSaveFileName(self, "Save File", "untitled.xml", "XML (*.xml)")
         
         nodes = self.networkBuild.graph.nodes(data = True)
         links = self.networkBuild.graph.edges(data = True)
 
-        xml.create(saveF)
+        try:
 
-        for node in nodes:
-            name = node[0]
-            storage = node[1]['storage']
-            xml.addNode(saveF, name, storage)
+            xml.create(saveF)
 
-        for link in links:
-            data = link[2]
-            name = data['name']
-            protocol = data['protocol']
-            node1 = link[0]
-            node2 = link[1]
-            risk = data['risk']
-            xml.addLink(saveF, name, protocol, node1, node2, risk)
+            for node in nodes:
+                name = node[0]
+                storage = node[1]['storage']
+                xml.addNode(saveF, name, storage)
+
+            for link in links:
+                data = link[2]
+                name = data['name']
+                protocol = data['protocol']
+                node1 = link[0]
+                node2 = link[1]
+                risk = data['risk']
+                xml.addLink(saveF, name, protocol, node1, node2, risk)
+
+        except IOError:
+            dialog = QtGui.QMessageBox.warning(self, "Incorrect File Selection", "You selected no file or an incorrect file type!")
 
     def openFile(self):
-        openF = QtGui.QFileDialog.getOpenFileName(self, "Open File")
+        openF = QtGui.QFileDialog.getOpenFileName(self, "Open File", "", "XML (*.xml)")
+        try:
 
-        links = xml.returnLinks(openF)
-        nodes = xml.returnNodes(openF)
+            links = xml.returnLinks(openF)
+            nodes = xml.returnNodes(openF)
 
-        #clear the current graph
-        self.makeNew()
+            #clear the current graph
+            self.makeNew()
 
-        for node in nodes:
-            if node != None:
-                name = node[0]
-                storage = node[1]
-                self.networkBuild.addNode(name, storage)
+            for node in nodes:
+                if node != None:
+                    name = node[0]
+                    storage = node[1]
+                    self.networkBuild.addNode(name, storage)
 
-        for link in links:
-            if link != None:
-                name = link[0]
-                risk = link[1]
-                protocol = link[2]
-                node1 = link[3]
-                node2 = link[4]
-                self.networkBuild.addEdge(name, protocol, node1, node2, risk)
+            for link in links:
+                if link != None:
+                    name = link[0]
+                    risk = link[1]
+                    protocol = link[2]
+                    node1 = link[3]
+                    node2 = link[4]
+                    self.networkBuild.addEdge(name, protocol, node1, node2, risk)
+
+        except IOError:
+            dialog = QtGui.QMessageBox.warning(self, "Incorrect File Selection", "You selected no file or an incorrect file type!")
 
     def makeNew(self):
         self.networkBuild.clearAll()

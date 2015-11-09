@@ -5,6 +5,7 @@ class AddEdgeDialog(QDialog):
 
     def __init__(self, nodes = [], parent = None):
         super(AddEdgeDialog, self).__init__(parent)
+        self.setWindowTitle("Add Edge")
         self.nodes = nodes
 
         layout = QVBoxLayout(self)
@@ -83,6 +84,7 @@ class RemoveEdgeDialog(QDialog):
 
     def __init__(self, nodes = [], parent = None):
         super(RemoveEdgeDialog, self).__init__(parent)
+        self.setWindowTitle("Remove Edge")
         self.nodes = nodes
 
         layout = QVBoxLayout(self)
