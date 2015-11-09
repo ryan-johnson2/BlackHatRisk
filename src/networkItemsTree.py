@@ -1,6 +1,7 @@
 from PyQt4 import QtGui, QtCore
 import networkItems
 import edgeDialog
+import nodeDialog
 
 class NetworkItemsTree(QtGui.QTreeWidget):
 
@@ -25,16 +26,7 @@ class NetworkItemsTree(QtGui.QTreeWidget):
             treeItem.addChild(networkItems.NetworkItem(item))
 
         self.addTopLevelItem(treeItem)
-        self.itemDoubleClicked.connect(self.showDialog)
-
-    def addNode(self, nodeName):
-        self.graph.addNode(nodeName)
-
-    def showDialog(self):
-        text, ok = QtGui.QInputDialog.getText(self, 'Input Dialog', 'Enter the node name:')
-
-        if ok:
-            self.addNode(str(text))
+        #self.itemDoubleClicked.connect(self.showDialog)
 
 
 

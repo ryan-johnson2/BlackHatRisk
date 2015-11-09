@@ -2,6 +2,7 @@ from PyQt4 import QtGui, QtCore
 import networkItemsTree
 import nxGraph
 import edgeDialog
+import XMLfunctions as xml
 
 class MainFrame(QtGui.QMainWindow):
     """Creates the main frame of the GUI  which will contain
@@ -56,25 +57,28 @@ class MainFrame(QtGui.QMainWindow):
         #add menus to menu bar
         fileMenu = menu.addMenu('&File')
         analyzeMenu = menu.addMenu('&Analyze')
-        edgeMenu = menu.addMenu('&Edge')
+        modifyMenu = menu.addMenu('&Modify')
         optionsMenu = menu.addMenu('&Options')
 
         #set save actions and add to file menu
         saveAction = QtGui.QAction('&Save', self)        
         saveAction.setShortcut('Ctrl+S')
         saveAction.setStatusTip('Save file')
+        saveAction.triggered.connect(lambda: self.saveFile())
         fileMenu.addAction(saveAction)
 
         #set open actions and add to file menu
         openAction = QtGui.QAction('&Open', self)        
         openAction.setShortcut('Ctrl+O')
         openAction.setStatusTip('Open file')
+        openAction.triggered.connect(lambda: self.openFile())
         fileMenu.addAction(openAction)
 
         #set new actions and add to file menu
         newAction = QtGui.QAction('&New', self)        
         newAction.setShortcut('Ctrl+N')
         newAction.setStatusTip('New file')
+        newAction.triggered.connect(lambda: self.makeNew())
         fileMenu.addAction(newAction)
 
         #set exit actions and add to file menu
@@ -112,20 +116,88 @@ class MainFrame(QtGui.QMainWindow):
         #set the help action and add to options
         helpAction = QtGui.QAction('&Help', self)        
         helpAction.setStatusTip('Help')
+        helpAction.triggered.connect(lambda: self.showHelp())
         optionsMenu.addAction(helpAction)
 
-        addEdgeAction = QtGui.QAction('&Add', self)        
+        addNodeAction = QtGui.QAction('&Add Node', self)        
+        addNodeAction.setStatusTip('Add Node')
+        addNodeAction.triggered.connect(lambda: self.networkBuild.getNewNode())
+        modifyMenu.addAction(addNodeAction)
+
+        addEdgeAction = QtGui.QAction('&Add Edge', self)        
         addEdgeAction.setStatusTip('Add Edge')
-        addEdgeAction.triggered.connect(lambda: self.getNewEdge())
-        edgeMenu.addAction(addEdgeAction)
+        addEdgeAction.triggered.connect(lambda: self.networkBuild.getNewEdge())
+        modifyMenu.addAction(addEdgeAction)
 
-    def addEdge(self, nodes):
-        self.networkBuild.addEdge(nodes)
+        removeNodeAction = QtGui.QAction('&Remove Node', self)        
+        removeNodeAction.setStatusTip('Remove Node')
+        removeNodeAction.triggered.connect(lambda: self.networkBuild.getRemoveNode())
+        modifyMenu.addAction(removeNodeAction)
 
-    def getNewEdge(self):
-        nodes, ok = edgeDialog.EdgeDialog.retNodes()
-        if ok:
-            self.addEdge(nodes)
+        removeEdgeAction = QtGui.QAction('&Remove Edge', self)        
+        removeEdgeAction.setStatusTip('Remove Edge')
+        removeEdgeAction.triggered.connect(lambda: self.networkBuild.getRemoveEdge())
+        modifyMenu.addAction(removeEdgeAction)
+
+    def saveFile(self):
+        saveF = QtGui.QFileDialog.getSaveFileName(self, "Save File")
+        
+        nodes = self.networkBuild.graph.nodes(data = True)
+        links = self.networkBuild.graph.edges(data = True)
+
+        xml.create(saveF)
+
+        for node in nodes:
+            name = node[0]
+            storage = node[1]['storage']
+            xml.addNode(saveF, name, storage)
+
+        for link in links:
+            data = link[2]
+            name = data['name']
+            protocol = data['protocol']
+            node1 = link[0]
+            node2 = link[1]
+            risk = data['risk']
+            xml.addLink(saveF, name, protocol, node1, node2, risk)
+
+    def openFile(self):
+        openF = QtGui.QFileDialog.getOpenFileName(self, "Open File")
+
+        links = xml.returnLinks(openF)
+        nodes = xml.returnNodes(openF)
+
+        #clear the current graph
+        self.makeNew()
+
+        for node in nodes:
+            if node != None:
+                name = node[0]
+                storage = node[1]
+                self.networkBuild.addNode(name, storage)
+
+        for link in links:
+            if link != None:
+                name = link[0]
+                risk = link[1]
+                protocol = link[2]
+                node1 = link[3]
+                node2 = link[4]
+                self.networkBuild.addEdge(name, protocol, node1, node2, risk)
+
+    def makeNew(self):
+        self.networkBuild.clearAll()
+
+    def showHelp(self):
+        message = QtGui.QMessageBox.about(self, "Black Hat Risk", "Black Hat Risk Help")
+
+
+
+
+
+
+
+
 
 
 
