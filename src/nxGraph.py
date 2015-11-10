@@ -58,6 +58,7 @@ class GraphCanvas(FigureCanvas):
         self.redrawGraph()
 
     def removeNode(self, node):
+        self.checkAndRemoveLinks(node)
         self.graph.remove_node(node)
         del self.labels[node]
         self.pos = nx.spring_layout(self.graph)
@@ -105,4 +106,11 @@ class GraphCanvas(FigureCanvas):
         nodes, ok = ed.RemoveEdgeDialog.retNodes(currNodes)
         if ok:
             self.removeEdge(nodes[0], nodes[1])
+
+    def checkAndRemoveLinks(self, node):
+        links = self.graph.edges()
+
+        for link in links:
+            if node in link:
+                self.removeEdge(link[0], link[1])
 
