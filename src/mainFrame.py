@@ -58,6 +58,7 @@ class MainFrame(QtGui.QMainWindow):
         fileMenu = menu.addMenu('&File')
         analyzeMenu = menu.addMenu('&Analyze')
         modifyMenu = menu.addMenu('&Modify')
+        viewMenu = menu.addMenu('&View')
         optionsMenu = menu.addMenu('&Options')
 
         #set save actions and add to file menu
@@ -111,33 +112,51 @@ class MainFrame(QtGui.QMainWindow):
         #set the settings action and add to options
         settingsAction = QtGui.QAction('&Settings', self)        
         settingsAction.setStatusTip('Settings')
+        settingsAction.triggered.connect(lambda: self.showSettings())
         optionsMenu.addAction(settingsAction)
 
         #set the help action and add to options
         helpAction = QtGui.QAction('&Help', self)        
         helpAction.setStatusTip('Help')
+        helpAction.setShortcut("Ctrl+h")
         helpAction.triggered.connect(lambda: self.showHelp())
         optionsMenu.addAction(helpAction)
 
         addNodeAction = QtGui.QAction('&Add Node', self)        
         addNodeAction.setStatusTip('Add Node')
+        addNodeAction.setShortcut('Ctrl+a')
         addNodeAction.triggered.connect(lambda: self.networkBuild.getNewNode())
         modifyMenu.addAction(addNodeAction)
 
         addEdgeAction = QtGui.QAction('&Add Edge', self)        
         addEdgeAction.setStatusTip('Add Edge')
+        addEdgeAction.setShortcut('Ctrl+e')
         addEdgeAction.triggered.connect(lambda: self.networkBuild.getNewEdge())
         modifyMenu.addAction(addEdgeAction)
 
         removeNodeAction = QtGui.QAction('&Remove Node', self)        
         removeNodeAction.setStatusTip('Remove Node')
+        removeNodeAction.setShortcut('Ctrl+z')
         removeNodeAction.triggered.connect(lambda: self.networkBuild.getRemoveNode())
         modifyMenu.addAction(removeNodeAction)
 
         removeEdgeAction = QtGui.QAction('&Remove Edge', self)        
         removeEdgeAction.setStatusTip('Remove Edge')
+        removeEdgeAction.setShortcut('Ctrl+d')
         removeEdgeAction.triggered.connect(lambda: self.networkBuild.getRemoveEdge())
         modifyMenu.addAction(removeEdgeAction)
+
+        viewNodeAction = QtGui.QAction('&View Node', self)        
+        viewNodeAction.setStatusTip('View Node')
+        viewNodeAction.setShortcut('Ctrl+w')
+        viewNodeAction.triggered.connect(lambda: self.networkBuild.displayNode())
+        viewMenu.addAction(viewNodeAction)
+
+        viewEdgeAction = QtGui.QAction('&View Edge', self)        
+        viewEdgeAction.setStatusTip('View Edge')
+        viewEdgeAction.setShortcut('Ctrl+r')
+        viewEdgeAction.triggered.connect(lambda: self.networkBuild.displayEdge())
+        viewMenu.addAction(viewEdgeAction)
 
     def saveFile(self):
         saveF = QtGui.QFileDialog.getSaveFileName(self, "Save File", "untitled.xml", "XML (*.xml)")
@@ -200,6 +219,8 @@ class MainFrame(QtGui.QMainWindow):
     def showHelp(self):
         message = QtGui.QMessageBox.about(self, "Black Hat Risk", "Black Hat Risk Help")
 
+    def showSettings(self):
+        message = QtGui.QMessageBox.about(self, "Black Hat Risk", "Black Hat Risk Settings")
 
 
 
