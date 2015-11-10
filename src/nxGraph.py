@@ -92,6 +92,20 @@ class GraphCanvas(FigureCanvas):
         if ok:
             self.removeNode(node)
 
+    def displayNode(self):
+        currNodes = self.graph.nodes()
+        node, ok = nd.DisplayNodeDialog.getNode(currNodes)
+        if ok:
+            name = node
+            storage = "Unknown"
+
+            for item in self.graph.nodes(data = True):
+                if item[0] == node:
+                    storage = item[1]['storage']
+
+
+            message = QtGui.QMessageBox.information(self, "View Node", "Name: {0}\nStorage: {1}".format(name, storage))
+
     #dailog to add an edge to the graph
     def getNewEdge(self):
         currNodes = self.graph.nodes()
@@ -105,4 +119,25 @@ class GraphCanvas(FigureCanvas):
         nodes, ok = ed.RemoveEdgeDialog.retNodes(currNodes)
         if ok:
             self.removeEdge(nodes[0], nodes[1])
+
+    def displayEdge(self):
+        currNodes = self.graph.nodes()
+        edge, ok = ed.DisplayEdgeDialog.retNodes(currNodes)
+        if ok:
+            node1 = edge[0]
+            node2 = edge[1]
+            name = "Unknown"
+            protocol = "Unknown"
+            risk = "Unknown"
+
+            for item in self.graph.edges(data = True):
+                if (item[0] == node1 and item[1] == node2) or (item[1] == node1 and item[0] == node2):
+                    name = item[2]['name']
+                    protocol = item[2]['protocol']
+                    risk = item[2]['risk']
+
+
+            message = QtGui.QMessageBox.information(self, "View Edge", "Name: {0}\nNode 1: {1}\nNode 2: {2}\nProtocol: {3}\nRisk: {4}".format(name, node1, node2, protocol, risk))
+
+
 

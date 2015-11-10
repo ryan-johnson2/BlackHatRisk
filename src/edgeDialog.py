@@ -126,3 +126,50 @@ class RemoveEdgeDialog(QDialog):
         result = dialog.exec_()
         nodes = dialog.getNodes()
         return (nodes, result == QDialog.Accepted)
+
+class DisplayEdgeDialog(QDialog):
+
+    def __init__(self, nodes = [], parent = None):
+        super(DisplayEdgeDialog, self).__init__(parent)
+        self.setWindowTitle("Display Edge")
+        self.nodes = nodes
+
+        layout = QVBoxLayout(self)
+
+        self.node1lbl = QLabel(self)
+        self.node1lbl.setText("Node 1 Name:")
+        self.node1 = QComboBox(self)
+
+        for node in self.nodes:
+            self.node1.addItem(node)
+
+
+        self.node2lbl = QLabel(self)
+        self.node2lbl.setText("Node 2 Name:")
+        self.node2 = QComboBox(self)
+        
+        for node in self.nodes:
+            self.node2.addItem(node)
+
+        layout.addWidget(self.node1lbl)
+        layout.addWidget(self.node1)
+        layout.addWidget(self.node2lbl)
+        layout.addWidget(self.node2)
+
+        # OK and Cancel buttons
+        buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel,Qt.Horizontal, self)
+        buttons.accepted.connect(self.accept)
+        buttons.rejected.connect(self.reject)
+        layout.addWidget(buttons)
+
+    # get current date and time from the dialog
+    def getNodes(self):
+        return (str(self.node1.currentText()), str(self.node2.currentText()))
+
+    # static method to create the dialog and return (date, time, accepted)
+    @staticmethod
+    def retNodes(nodes, parent = None):
+        dialog = DisplayEdgeDialog(nodes, parent)
+        result = dialog.exec_()
+        nodes = dialog.getNodes()
+        return (nodes, result == QDialog.Accepted)
