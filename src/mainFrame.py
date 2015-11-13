@@ -1,7 +1,6 @@
 from PyQt4 import QtGui, QtCore
 import networkItemsTree
 import nxGraph
-import edgeDialog
 import XMLfunctions as xml
 
 class MainFrame(QtGui.QMainWindow):
@@ -32,7 +31,7 @@ class MainFrame(QtGui.QMainWindow):
         self.netTree = networkItemsTree.NetworkItemsTree(self.networkBuild)
         
 
-        #create splitter which allos resizing
+        #create splitter which allows resizing
         splitter = QtGui.QSplitter(QtCore.Qt.Horizontal)
 
         #add widgets to splitter

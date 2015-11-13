@@ -1,8 +1,6 @@
 #library dependencies
 import sys
 from PyQt4 import QtGui
-
-#created classes
 import mainFrame
 
 def main():

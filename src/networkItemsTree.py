@@ -1,7 +1,5 @@
 from PyQt4 import QtGui, QtCore
 import networkItems
-import edgeDialog
-import nodeDialog
 
 class NetworkItemsTree(QtGui.QTreeWidget):
 

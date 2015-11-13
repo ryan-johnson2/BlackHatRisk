@@ -2,8 +2,7 @@ from PyQt4 import QtGui, QtCore
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 import networkx as nx
-import edgeDialog as ed
-import nodeDialog as nd
+import dialogs
 
 class GraphCanvas(FigureCanvas):
     
@@ -24,8 +23,9 @@ class GraphCanvas(FigureCanvas):
         FigureCanvas.updateGeometry(self)
 
         #create a network graph and labels
-        self.graph = nx.Graph()
-        self.pos = nx.spring_layout(self.graph)
+        self.graph = nx.MultiGraph()
+        self.setLayout = lambda g: nx.spring_layout(g)
+        self.pos = self.setLayout(self.graph)
         self.labels = {}
         self.edgeLabels = {}
 
@@ -39,13 +39,14 @@ class GraphCanvas(FigureCanvas):
         self.axes.hold(False)
         self.draw()
         self.graph = nx.Graph()
-        self.pos = nx.spring_layout(self.graph)
+        self.pos = self.setLayout(self.graph)
         self.labels = {}
         self.edgeLabels = {}
 
 
     #redraw the graph and update the figure
     def redrawGraph(self):
+        self.pos = self.setLayout(self.graph)
         nx.draw(self.graph, self.pos, ax = self.axes, labels = self.labels)
         nx.draw_networkx_edge_labels(self.graph, self.pos, edge_labels = self.edgeLabels, ax = self.axes, label_pos = 0.5)
         self.draw()
@@ -53,7 +54,6 @@ class GraphCanvas(FigureCanvas):
     #add a node to the graph
     def addNode(self, node, storage):
         self.graph.add_node(node, storage = storage)
-        self.pos = nx.spring_layout(self.graph)
         self.labels[node] = node
         self.redrawGraph()
 
@@ -61,19 +61,16 @@ class GraphCanvas(FigureCanvas):
         self.checkAndRemoveLinks(node)
         self.graph.remove_node(node)
         del self.labels[node]
-        self.pos = nx.spring_layout(self.graph)
         self.redrawGraph()
 
     #add an edge to the graph
     def addEdge(self, name, protocol ,node1, node2, risk):
-        self.graph.add_edge(node1, node2, name = name, protocol = protocol, risk = risk)
-        self.pos = nx.spring_layout(self.graph)
+        self.graph.add_edge(node1, node2, key = name, name = name, protocol = protocol, risk = risk)
         self.edgeLabels[(node1, node2)] = name
         self.redrawGraph()
 
     def removeEdge(self, node1, node2):
         self.graph.remove_edge(node1, node2)
-        self.pos = nx.spring_layout(self.graph)
         try:
             del self.edgeLabels[(node1, node2)]
         except KeyError:
@@ -82,20 +79,20 @@ class GraphCanvas(FigureCanvas):
 
     #dialog to add a node to the graph
     def getNewNode(self):
-        node, ok = nd.AddNodeDialog.getNode()
+        node, ok = dialogs.AddNode.getDataDialog()
         if ok:
             self.addNode(node[0], node[1])
 
     #dialog to remove a node from the graph
     def getRemoveNode(self):
         currNodes = self.graph.nodes()
-        node, ok = nd.RemoveNodeDialog.getNode(currNodes)
+        node, ok = dialogs.RemoveNode.getDataDialog(currNodes)
         if ok:
             self.removeNode(node)
 
     def displayNode(self):
         currNodes = self.graph.nodes()
-        node, ok = nd.DisplayNodeDialog.getNode(currNodes)
+        node, ok = dialogs.DisplayNode.getDataDialog(currNodes)
         if ok:
             name = node
             storage = "Unknown"
@@ -110,14 +107,14 @@ class GraphCanvas(FigureCanvas):
     #dailog to add an edge to the graph
     def getNewEdge(self):
         currNodes = self.graph.nodes()
-        nodes, ok = ed.AddEdgeDialog.retNodes(currNodes)
+        nodes, ok = dialogs.AddEdge.getDataDialog(currNodes)
         if ok:
             self.addEdge(nodes[0], nodes[1], nodes[2], nodes[3], nodes[4])
 
     #dialog to remove an edge from the graph
     def getRemoveEdge(self):
         currNodes = self.graph.nodes()
-        nodes, ok = ed.RemoveEdgeDialog.retNodes(currNodes)
+        nodes, ok = dialogs.RemoveEdge.getDataDialog(currNodes)
         if ok:
             self.removeEdge(nodes[0], nodes[1])
 
@@ -130,7 +127,7 @@ class GraphCanvas(FigureCanvas):
 
     def displayEdge(self):
         currNodes = self.graph.nodes()
-        edge, ok = ed.DisplayEdgeDialog.retNodes(currNodes)
+        edge, ok = dialogs.DisplayEdge.getDataDialog(currNodes)
         if ok:
             node1 = edge[0]
             node2 = edge[1]
