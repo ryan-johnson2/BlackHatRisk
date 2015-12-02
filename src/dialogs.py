@@ -1,5 +1,6 @@
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
+import resources
 
 class Dialog(QDialog):
 
@@ -43,8 +44,10 @@ class AddNode(Dialog):
 
         self.storagelbl = QLabel(self)
         self.storagelbl.setText("Storage:")
-        self.storage = QLineEdit(self)
-        self.storage.setObjectName("storage")
+        self.storage = QComboBox(self)
+        
+        for storeDev in resources.storage:
+            self.storage.addItem(storeDev)
 
         self.layout.addWidget(self.nodeNamelbl)
         self.layout.addWidget(self.nodeName)
@@ -53,7 +56,7 @@ class AddNode(Dialog):
 
     def getData(self):
         name = str(self.nodeName.text())
-        storage = str(self.storage.text())
+        storage = str(self.storage.currentText())
         return (name, storage)
 
     @staticmethod
@@ -139,8 +142,11 @@ class AddEdge(Dialog):
         #protocol of the edge
         self.protocollbl = QLabel(self)
         self.protocollbl.setText("Protocol:")
-        self.protocol = QLineEdit(self)
-        self.protocol.setObjectName("Protocol")
+        self.protocol = QComboBox(self)
+        
+        for proto in resources.protocols:
+            self.protocol.addItem(proto)
+
 
         #node 1 of the edge
         self.node1lbl = QLabel(self)
@@ -161,8 +167,13 @@ class AddEdge(Dialog):
         #risk of the edge
         self.risklbl = QLabel(self)
         self.risklbl.setText("Risk:")
-        self.risk = QLineEdit(self)
-        self.risk.setObjectName("Risk")
+        self.risk = QLabel(self)
+        self.risk.setText("5")
+
+        #self.risk = QComboBox(self)
+        
+        #for value in ['low', 'medium', 'high']:
+        #    self.risk.addItem(str(value))
 
 
 
@@ -179,10 +190,10 @@ class AddEdge(Dialog):
 
     def getData(self):
         name = str(self.linkName.text())
-        protocol = str(self.protocol.text())
+        protocol = str(self.protocol.currentText())
         node1 = str(self.node1.currentText())
         node2 = str(self.node2.currentText())
-        risk = str(self.risk.text())
+        risk = str(5)
         return (name, protocol, node1, node2, risk)
 
     @staticmethod
@@ -201,28 +212,26 @@ class RemoveEdge(Dialog):
         self.addButtons()
 
     def addWidgets(self):
-        self.node1lbl = QLabel(self)
-        self.node1lbl.setText("Node 1 Name:")
-        self.node1 = QComboBox(self)
-
-        for node in self.nodes:
-            self.node1.addItem(node)
-
-
-        self.node2lbl = QLabel(self)
-        self.node2lbl.setText("Node 2 Name:")
-        self.node2 = QComboBox(self)
+        self.edgelbl = QLabel(self)
+        self.edgelbl.setText("Edge Name:")
+        self.edge = QComboBox(self)
         
-        for node in self.nodes:
-            self.node2.addItem(node)
+        for edge in self.nodes:
+            self.edge.addItem(edge[2]["name"])
 
-        self.layout.addWidget(self.node1lbl)
-        self.layout.addWidget(self.node1)
-        self.layout.addWidget(self.node2lbl)
-        self.layout.addWidget(self.node2)
+        self.layout.addWidget(self.edgelbl)
+        self.layout.addWidget(self.edge)
 
     def getData(self):
-        return (str(self.node1.currentText()), str(self.node2.currentText()))
+        name = str(self.edge.currentText())
+        
+        for edge in self.nodes:
+            if edge[2]['name'] == name:
+                node1 = edge[0]
+                node2 = edge[1]
+                break
+
+        return (node1, node2)
 
     @staticmethod
     def getDataDialog(nodes, parent = None):
@@ -240,28 +249,26 @@ class DisplayEdge(Dialog):
         self.addButtons()
 
     def addWidgets(self):
-        self.node1lbl = QLabel(self)
-        self.node1lbl.setText("Node 1 Name:")
-        self.node1 = QComboBox(self)
-
-        for node in self.nodes:
-            self.node1.addItem(node)
-
-
-        self.node2lbl = QLabel(self)
-        self.node2lbl.setText("Node 2 Name:")
-        self.node2 = QComboBox(self)
+        self.edgelbl = QLabel(self)
+        self.edgelbl.setText("Edge Name:")
+        self.edge = QComboBox(self)
         
-        for node in self.nodes:
-            self.node2.addItem(node)
+        for edge in self.nodes:
+            self.edge.addItem(edge[2]["name"])
 
-        self.layout.addWidget(self.node1lbl)
-        self.layout.addWidget(self.node1)
-        self.layout.addWidget(self.node2lbl)
-        self.layout.addWidget(self.node2)
+        self.layout.addWidget(self.edgelbl)
+        self.layout.addWidget(self.edge)
 
     def getData(self):
-        return (str(self.node1.currentText()), str(self.node2.currentText()))
+        name = str(self.edge.currentText())
+        
+        for edge in self.nodes:
+            if edge[2]['name'] == name:
+                node1 = edge[0]
+                node2 = edge[1]
+                break
+
+        return (node1, node2)
 
     @staticmethod
     def getDataDialog(nodes, parent = None):

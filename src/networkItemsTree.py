@@ -1,5 +1,6 @@
 from PyQt4 import QtGui, QtCore
 import networkItems
+import resources
 
 class NetworkItemsTree(QtGui.QTreeWidget):
 
@@ -11,11 +12,11 @@ class NetworkItemsTree(QtGui.QTreeWidget):
     def initUI(self):
         self.setHeaderHidden(True)
 
-        protocols = ["SATCOM", "Courier", "Ethernet", "Plain Text", "Cypher Text"]
+        protocols = resources.protocols
         self.createTree("Protocols", protocols)
 
-        hosts = ["Unknown Host", "Router", "Radio"]
-        self.createTree("Hosts", hosts)
+        storage = resources.storage
+        self.createTree("Storage", storage)
 
     def createTree(self, name, items):
         treeItem = networkItems.NetworkItem(name)

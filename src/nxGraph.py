@@ -3,6 +3,7 @@ from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 import networkx as nx
 import dialogs
+import pygraphviz as pgv
 
 class GraphCanvas(FigureCanvas):
     
@@ -38,7 +39,7 @@ class GraphCanvas(FigureCanvas):
         self.axes.axis('off')
         self.axes.hold(False)
         self.draw()
-        self.graph = nx.Graph()
+        self.graph = nx.MultiGraph()
         self.pos = self.setLayout(self.graph)
         self.labels = {}
         self.edgeLabels = {}
@@ -66,15 +67,23 @@ class GraphCanvas(FigureCanvas):
     #add an edge to the graph
     def addEdge(self, name, protocol ,node1, node2, risk):
         self.graph.add_edge(node1, node2, key = name, name = name, protocol = protocol, risk = risk)
-        self.edgeLabels[(node1, node2)] = name
+        self.createEdgeLabels()
         self.redrawGraph()
+
+    def createEdgeLabels(self):
+        edges = self.graph.edges(data = True)
+        self.edgeLabels = {}
+        for edge in edges:
+            if (edge[0], edge[1]) in self.edgeLabels.keys():
+                self.edgeLabels[(edge[0], edge[1])] += ",\n" + edge[2]['name']
+            elif (edge[1], edge[0]) in self.edgeLabels.keys():
+                self.edgeLabels[(edge[1], edge[0])] += ",\n" + edge[2]['name']
+            else:
+                self.edgeLabels[(edge[0], edge[1])] = edge[2]['name']
 
     def removeEdge(self, node1, node2):
         self.graph.remove_edge(node1, node2)
-        try:
-            del self.edgeLabels[(node1, node2)]
-        except KeyError:
-            del self.edgeLabels[(node2, node1)]
+        self.createEdgeLabels()
         self.redrawGraph()
 
     #dialog to add a node to the graph
@@ -113,8 +122,8 @@ class GraphCanvas(FigureCanvas):
 
     #dialog to remove an edge from the graph
     def getRemoveEdge(self):
-        currNodes = self.graph.nodes()
-        nodes, ok = dialogs.RemoveEdge.getDataDialog(currNodes)
+        currEdges = self.graph.edges(data = True)
+        nodes, ok = dialogs.RemoveEdge.getDataDialog(currEdges)
         if ok:
             self.removeEdge(nodes[0], nodes[1])
 
@@ -126,8 +135,8 @@ class GraphCanvas(FigureCanvas):
                 self.removeEdge(link[0], link[1])
 
     def displayEdge(self):
-        currNodes = self.graph.nodes()
-        edge, ok = dialogs.DisplayEdge.getDataDialog(currNodes)
+        currEdges = self.graph.edges(data = True)
+        edge, ok = dialogs.DisplayEdge.getDataDialog(currEdges)
         if ok:
             node1 = edge[0]
             node2 = edge[1]
@@ -141,7 +150,4 @@ class GraphCanvas(FigureCanvas):
                     protocol = item[2]['protocol']
                     risk = item[2]['risk']
 
-
             message = QtGui.QMessageBox.information(self, "View Edge", "Name: {0}\nNode 1: {1}\nNode 2: {2}\nProtocol: {3}\nRisk: {4}".format(name, node1, node2, protocol, risk))
-
-
