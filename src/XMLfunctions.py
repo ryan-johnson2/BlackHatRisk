@@ -75,15 +75,5 @@ def returnNodes(fname):
 	#print returnList
 	return returnList
 
-'''if __name__ == '__main__':
-	create("test16")
-	addLink("bud", "GSM", "Node1", "Node2", 5)
-	addLink("Joe", "GSM", "Node1", "Node2", 5)
-	addNode("bud", "GSM")
-	addNode("Joe", "Phone")
-	#removeLink("bud")
-	#removeNode("Joe")
-	returnNodes()
-	returnLinks()
-	print "End"'''
+
 
