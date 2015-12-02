@@ -27,6 +27,10 @@ class NetworkItemsTree(QtGui.QTreeWidget):
         self.addTopLevelItem(treeItem)
         #self.itemDoubleClicked.connect(self.showDialog)
 
+    def updateUI(self):
+        self.clear()
+        self.initUI()
+
 
 
     

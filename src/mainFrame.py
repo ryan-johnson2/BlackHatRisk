@@ -2,6 +2,7 @@ from PyQt4 import QtGui, QtCore
 import networkItemsTree
 import nxGraph
 import XMLfunctions as xml
+import resources
 
 class MainFrame(QtGui.QMainWindow):
     """Creates the main frame of the GUI  which will contain
@@ -145,6 +146,26 @@ class MainFrame(QtGui.QMainWindow):
         removeEdgeAction.triggered.connect(lambda: self.networkBuild.getRemoveEdge())
         modifyMenu.addAction(removeEdgeAction)
 
+        removeProtoAction = QtGui.QAction('&Remove Protocol', self)        
+        removeProtoAction.setStatusTip('Remove Protocol')
+        removeProtoAction.triggered.connect(lambda: self.removeProtocol())
+        modifyMenu.addAction(removeProtoAction)
+
+        addProtoAction = QtGui.QAction('&Add Protocol', self)        
+        addProtoAction.setStatusTip('Add Protocol')
+        addProtoAction.triggered.connect(lambda: self.addProtocol())
+        modifyMenu.addAction(addProtoAction)
+
+        removeStoreAction = QtGui.QAction('&Remove Storage', self)        
+        removeStoreAction.setStatusTip('Remove Storeage')
+        removeStoreAction.triggered.connect(lambda: self.removeStorage())
+        modifyMenu.addAction(removeStoreAction)
+
+        addStoreAction = QtGui.QAction('&Add Storage', self)        
+        addStoreAction.setStatusTip('Add Storage')
+        addStoreAction.triggered.connect(lambda: self.addStorage())
+        modifyMenu.addAction(addStoreAction)
+
         viewNodeAction = QtGui.QAction('&View Node', self)        
         viewNodeAction.setStatusTip('View Node')
         viewNodeAction.setShortcut('Ctrl+w')
@@ -221,9 +242,21 @@ class MainFrame(QtGui.QMainWindow):
     def showSettings(self):
         message = QtGui.QMessageBox.about(self, "Black Hat Risk", "Black Hat Risk Settings")
 
+    def removeProtocol(self):
+        resources.getRemoveProtocol()
+        self.netTree.updateUI()
 
+    def addProtocol(self):
+        resources.getAddProtocol()
+        self.netTree.updateUI()
 
+    def removeStorage(self):
+        resources.getRemoveStorage()
+        self.netTree.updateUI()
 
+    def addStorage(self):
+        resources.getAddStorage()
+        self.netTree.updateUI()
 
 
 

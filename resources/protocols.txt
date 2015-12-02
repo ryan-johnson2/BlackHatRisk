@@ -1,0 +1,9 @@
+Email
+GSM
+Bluetooth
+Sharedrive
+Instant Communication
+Hamdata
+Nearfield
+Sneakernet
+SatCom

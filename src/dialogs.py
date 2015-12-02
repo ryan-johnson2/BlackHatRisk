@@ -275,6 +275,118 @@ class DisplayEdge(Dialog):
         dialog = DisplayEdge(nodes, parent)
         result = dialog.exec_()
         nodes = dialog.getData()
-        return (nodes, result == QDialog.Accepted) 
+        return (nodes, result == QDialog.Accepted)
+
+class RemoveProtocol(Dialog):
+
+    def __init__(self, nodes = [], parent = None):
+        super(RemoveProtocol, self).__init__(nodes, parent)
+        self.setTitle("Remove Protocol")
+        self.addWidgets()
+        self.addButtons()
+
+    def addWidgets(self):
+        self.protoNamelbl = QLabel(self)
+        self.protoNamelbl.setText("Protocol Name:")
+        self.protoName = QComboBox(self)
+        
+        for proto in resources.protocols:
+            self.protoName.addItem(proto)
+
+        self.layout.addWidget(self.protoNamelbl)
+        self.layout.addWidget(self.protoName)
+
+    def getData(self):
+        return str(self.protoName.currentText())
+
+    @staticmethod
+    def getDataDialog(nodes = [], parent = None):
+        dialog = RemoveProtocol(nodes, parent)
+        result = dialog.exec_()
+        nodeData = dialog.getData()
+        return (nodeData, result == QDialog.Accepted)
+
+class AddProtocol(Dialog):
+
+    def __init__(self, nodes = [], parent = None):
+        super(AddProtocol, self).__init__(nodes, parent)
+        self.setTitle("Add Protocol")
+        self.addWidgets()
+        self.addButtons()
+
+    def addWidgets(self):
+        self.protoNamelbl = QLabel(self)
+        self.protoNamelbl.setText("Protocol Name:")
+        self.protoName = QLineEdit(self)
+        self.protoName.setObjectName("Link Name")
+
+        self.layout.addWidget(self.protoNamelbl)
+        self.layout.addWidget(self.protoName)
+
+    def getData(self):
+        return str(self.protoName.text())
+
+    @staticmethod
+    def getDataDialog(nodes = [], parent = None):
+        dialog = AddProtocol(nodes, parent)
+        result = dialog.exec_()
+        nodeData = dialog.getData()
+        return (nodeData, result == QDialog.Accepted)
+
+class RemoveStorage(Dialog):
+
+    def __init__(self, nodes = [], parent = None):
+        super(RemoveStorage, self).__init__(nodes, parent)
+        self.setTitle("Remove Storage")
+        self.addWidgets()
+        self.addButtons()
+
+    def addWidgets(self):
+        self.storageNamelbl = QLabel(self)
+        self.storageNamelbl.setText("Storage Name:")
+        self.storageName = QComboBox(self)
+        
+        for store in resources.storage:
+            self.storageName.addItem(store)
+
+        self.layout.addWidget(self.storageNamelbl)
+        self.layout.addWidget(self.storageName)
+
+    def getData(self):
+        return str(self.storageName.currentText())
+
+    @staticmethod
+    def getDataDialog(nodes = [], parent = None):
+        dialog = RemoveStorage(nodes, parent)
+        result = dialog.exec_()
+        nodeData = dialog.getData()
+        return (nodeData, result == QDialog.Accepted)
+
+class AddStorage(Dialog):
+
+    def __init__(self, nodes = [], parent = None):
+        super(AddStorage, self).__init__(nodes, parent)
+        self.setTitle("Add Storage")
+        self.addWidgets()
+        self.addButtons()
+
+    def addWidgets(self):
+        self.storageNamelbl = QLabel(self)
+        self.storageNamelbl.setText("Storage Name:")
+        self.storageName = QLineEdit(self)
+        self.storageName.setObjectName("Storage Name")
+
+        self.layout.addWidget(self.storageNamelbl)
+        self.layout.addWidget(self.storageName)
+
+    def getData(self):
+        return str(self.storageName.text())
+
+    @staticmethod
+    def getDataDialog(nodes = [], parent = None):
+        dialog = AddStorage(nodes, parent)
+        result = dialog.exec_()
+        nodeData = dialog.getData()
+        return (nodeData, result == QDialog.Accepted)
 
 
