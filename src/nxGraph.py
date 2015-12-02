@@ -3,7 +3,6 @@ from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 import networkx as nx
 import dialogs
-import pygraphviz as pgv
 
 class GraphCanvas(FigureCanvas):
     
