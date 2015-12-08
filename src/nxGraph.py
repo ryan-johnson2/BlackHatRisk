@@ -3,6 +3,7 @@ from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 import networkx as nx
 import dialogs
+from copy import deepcopy
 
 class GraphCanvas(FigureCanvas):
     
@@ -32,7 +33,12 @@ class GraphCanvas(FigureCanvas):
         #images for nodes
         self.routerImg = '../img/router.png'
 
-    def clearAll(self):
+        #create a stack of old graphs for undo redo max size of 10
+        self.undoStack = []
+        self.redoStack = []
+
+
+    def clearScreen(self):
         self.fig.clear()
         self.axes = self.fig.add_subplot(111)
         self.axes.axis('off')
@@ -42,6 +48,10 @@ class GraphCanvas(FigureCanvas):
         self.pos = self.setLayout(self.graph)
         self.labels = {}
         self.edgeLabels = {}
+
+    def clearAll(self):
+        self.clearScreen()
+        self.clearStacks()
 
 
     #redraw the graph and update the figure
@@ -53,11 +63,15 @@ class GraphCanvas(FigureCanvas):
 
     #add a node to the graph
     def addNode(self, node, storage):
+        self.clearRedo()
+        self.pushToUndo()
         self.graph.add_node(node, storage = storage)
         self.labels[node] = node
         self.redrawGraph()
 
     def removeNode(self, node):
+        self.clearRedo()
+        self.pushToUndo()
         self.checkAndRemoveLinks(node)
         self.graph.remove_node(node)
         del self.labels[node]
@@ -65,6 +79,8 @@ class GraphCanvas(FigureCanvas):
 
     #add an edge to the graph
     def addEdge(self, name, protocol ,node1, node2, risk):
+        self.clearRedo()
+        self.pushToUndo()
         self.graph.add_edge(node1, node2, key = name, name = name, protocol = protocol, risk = risk)
         self.createEdgeLabels()
         self.redrawGraph()
@@ -81,6 +97,8 @@ class GraphCanvas(FigureCanvas):
                 self.edgeLabels[(edge[0], edge[1])] = edge[2]['name']
 
     def removeEdge(self, node1, node2):
+        self.clearRedo()
+        self.pushToUndo()
         self.graph.remove_edge(node1, node2)
         self.createEdgeLabels()
         self.redrawGraph()
@@ -116,8 +134,15 @@ class GraphCanvas(FigureCanvas):
     def getNewEdge(self):
         currNodes = self.graph.nodes()
         nodes, ok = dialogs.AddEdge.getDataDialog(currNodes)
-        if ok:
+
+        n1 = self.findNode(nodes[2])
+        n2 = self.findNode(nodes[3])
+        proto = nodes[1]
+
+        if ok and self.checkLinkCompat(n1, n2, proto):
             self.addEdge(nodes[0], nodes[1], nodes[2], nodes[3], nodes[4])
+        else:
+            message = QtGui.QMessageBox.warning(self, "Black Hat Risk", "Incompatible Link between storage devices!")
 
     #dialog to remove an edge from the graph
     def getRemoveEdge(self):
@@ -150,3 +175,110 @@ class GraphCanvas(FigureCanvas):
                     risk = item[2]['risk']
 
             message = QtGui.QMessageBox.information(self, "View Edge", "Name: {0}\nNode 1: {1}\nNode 2: {2}\nProtocol: {3}\nRisk: {4}".format(name, node1, node2, protocol, risk))
+
+    def pushToUndo(self):
+        data = (deepcopy(self.graph), deepcopy(self.labels), deepcopy(self.edgeLabels))
+        if len(self.undoStack) == 10:
+            self.undoStack = self.undoStack[1:].append(data)
+        else:
+            self.undoStack.append(data)
+
+    def pushToRedo(self):
+        data = (deepcopy(self.graph), deepcopy(self.labels), deepcopy(self.edgeLabels))
+        if len(self.redoStack) == 10:
+            self.redoStack = self.redoStack[1:].append(data)
+        else:
+            self.redoStack.append(data)
+
+    def clearRedo(self):
+        for item in self.redoStack:
+            self.undoStack.append(item)
+        self.redoStack = []
+
+    def clearStacks(self):
+        self.undoStack = []
+        self.redoStack = []
+
+    def undo(self):
+        if not (self.undoStack == []):
+            self.pushToRedo()
+            self.graph, self.labels, self.edgeLabels = self.undoStack.pop()
+            self.redrawGraph()
+        else:
+            self.clearScreen()
+
+    def redo(self):
+        if not (self.redoStack == []):
+            self.pushToUndo()
+            self.graph, self.labels, self.edgeLabels = self.redoStack.pop()
+            self.redrawGraph()
+        else:
+            self.clearScreen()
+
+    def checkLinkCompat(self, node1, node2, proto):
+        stores = [node1[1]["storage"], node2[1]["storage"]]
+
+        if stores[0] == "Paper" and stores[1] == "Paper":
+            if proto == "Sneakernet":
+                return True
+            return False
+
+        elif "Paper" in stores and "Hard Drive" in stores:
+            if proto == "IO":
+                return True
+            return False
+
+        elif "Paper" in stores and "Phone" in stores:
+            if proto == "IO":
+                return True
+            return False
+
+        elif "Hard Drive" in stores and "Phone" in stores:
+            if proto in ["IO", "Bluetooth", "Sharedrive", "Instant Communication", "Nearfield"]:
+                return True
+            return False
+
+        elif "Hard Drive" in stores and "Removeable Media" in stores:
+            if proto in ["IO", "Bluetooth", "Nearfield"]:
+                return True
+            return False
+
+        elif stores[0] == "Hard Drive" and stores[1] == "Hard Drive":
+            if proto in ["IO", "Bluetooth", "Sharedrive", "Instant Communication", "Nearfield", "Email"]:
+                return True
+            return False
+
+        elif "Phone" in stores and "Removeable Media" in stores:
+            if proto in ["IO", "Bluetooth", "Nearfield"]:
+                return True
+            return False
+
+        elif stores[0] == "Phone" and stores[1] == "Phone":
+            if proto in ["IO", "Bluetooth", "Sharedrive", "Instant Communication", "Nearfield", "GSM", "Email" ]:
+                return True
+            return False
+
+        elif stores[0] == "Removeable Media" and stores[1] == "Removeable Media":
+            if proto in ["IO", "Bluetooth", "Sharedrive", "Instant Communication", "Nearfield", "GSM", "Email"]:
+                return True
+            return False
+
+        else:
+            return False
+
+    def findNode(self, name):
+        for node in self.graph.nodes(data = True):
+            if node[0] == name:
+                return node
+
+
+
+
+
+        
+
+
+
+
+
+            

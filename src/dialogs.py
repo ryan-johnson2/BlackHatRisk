@@ -174,9 +174,6 @@ class AddEdge(Dialog):
         
         #for value in ['low', 'medium', 'high']:
         #    self.risk.addItem(str(value))
-
-
-
         self.layout.addWidget(self.linkNamelbl)
         self.layout.addWidget(self.linkName)
         self.layout.addWidget(self.protocollbl)

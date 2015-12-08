@@ -59,6 +59,7 @@ class MainFrame(QtGui.QMainWindow):
         analyzeMenu = menu.addMenu('&Analyze')
         modifyMenu = menu.addMenu('&Modify')
         viewMenu = menu.addMenu('&View')
+        editMenu = menu.addMenu('&Edit')
         optionsMenu = menu.addMenu('&Options')
 
         #set save actions and add to file menu
@@ -114,6 +115,7 @@ class MainFrame(QtGui.QMainWindow):
         settingsAction.setStatusTip('Settings')
         settingsAction.triggered.connect(lambda: self.showSettings())
         optionsMenu.addAction(settingsAction)
+        #need to add a setting for max allowed filesize
 
         #set the help action and add to options
         helpAction = QtGui.QAction('&Help', self)        
@@ -136,7 +138,7 @@ class MainFrame(QtGui.QMainWindow):
 
         removeNodeAction = QtGui.QAction('&Remove Node', self)        
         removeNodeAction.setStatusTip('Remove Node')
-        removeNodeAction.setShortcut('Ctrl+z')
+        removeNodeAction.setShortcut('Ctrl+i')
         removeNodeAction.triggered.connect(lambda: self.networkBuild.getRemoveNode())
         modifyMenu.addAction(removeNodeAction)
 
@@ -177,6 +179,18 @@ class MainFrame(QtGui.QMainWindow):
         viewEdgeAction.setShortcut('Ctrl+r')
         viewEdgeAction.triggered.connect(lambda: self.networkBuild.displayEdge())
         viewMenu.addAction(viewEdgeAction)
+
+        undoAction = QtGui.QAction('&Undo', self)        
+        undoAction.setStatusTip('Undo')
+        undoAction.setShortcut('Ctrl+z')
+        undoAction.triggered.connect(lambda: self.networkBuild.undo())
+        editMenu.addAction(undoAction)
+
+        redoAction = QtGui.QAction('&Redo', self)        
+        redoAction.setStatusTip('Redo')
+        redoAction.setShortcut('Ctrl+y')
+        redoAction.triggered.connect(lambda: self.networkBuild.redo())
+        editMenu.addAction(redoAction)
 
     def saveFile(self):
         saveF = QtGui.QFileDialog.getSaveFileName(self, "Save File", "untitled.xml", "XML (*.xml)")
