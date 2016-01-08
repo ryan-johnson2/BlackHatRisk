@@ -1,9 +1,10 @@
 import dialogs
 
-protocolFname = "../resources/protocols.txt"
-storageFname = "../resources/storageDevices.txt"
+protocolFname = "../resources/protocols.txt" # path to the protocols file
+storageFname = "../resources/storageDevices.txt" # path to the storage devices file
 
 def getProtocols(fname):
+    """get the protocols from the text file and return them as a list"""
     protocols = []
 
     f = open(fname, "r")
@@ -11,11 +12,12 @@ def getProtocols(fname):
     f.close()
 
     for protocol in protos:
-        protocols.append(protocol[:-1])
+        protocols.append(protocol[:-1]) # remove trailing \n
 
     return protocols
 
 def getStorage(fname):
+    """get the storage devices from the text file and return them as a list"""
     storage = []
 
     f = open(fname, "r")
@@ -24,7 +26,7 @@ def getStorage(fname):
 
 
     for storeDev in storeDevs:
-        storage.append(storeDev[:-1])
+        storage.append(storeDev[:-1]) # remove trailing \n
 
     return storage
 
@@ -32,23 +34,26 @@ protocols = getProtocols(protocolFname)
 storage = getStorage(storageFname)
 
 def getRemoveProtocol():
-    proto = protocols
-    res, ok = dialogs.RemoveProtocol.getDataDialog()
+    """creates a graphical dialog to remove a protocol"""
+    proto = protocols # get the current protocols
+    res, ok = dialogs.RemoveProtocol.getDataDialog() # creates graphical dialog
     if ok:
         try:
-            proto.remove(res)
-            rewriteResource(proto, protocolFname)
+            proto.remove(res) # remove the selected protocol
+            rewriteResource(proto, protocolFname) # rewrite the protocols text file
         except ValueError:
             return
 
 def getAddProtocol():
+    """creates a graphical dialog to add a protocol"""
     proto = protocols
     res, ok = dialogs.AddProtocol.getDataDialog()
     if ok:
-        proto.append(res)
-        rewriteResource(proto, protocolFname)
+        proto.append(res) # add the new protocol 
+        rewriteResource(proto, protocolFname) # rewrite the protocols text file
 
 def getRemoveStorage():
+    """creates a graphical dialog to remove a storage device"""
     store = storage
     res, ok = dialogs.RemoveStorage.getDataDialog()
     if ok:
@@ -59,6 +64,7 @@ def getRemoveStorage():
             return
 
 def getAddStorage():
+    """creates a graphical dialog to add a storage device"""
     store = storage
     res, ok = dialogs.AddStorage.getDataDialog()
     if ok:
@@ -68,10 +74,11 @@ def getAddStorage():
 
 
 def rewriteResource(resource, fname):
+    """rewrite the given text file with the new resources"""
     f = open(fname, "w")
 
     for item in resource:
-        f.write(item + "\n")
+        f.write(item + "\n") # delimit each entry with a \n
 
     f.close()
 

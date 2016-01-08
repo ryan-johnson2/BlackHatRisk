@@ -4,6 +4,8 @@ from PyQt4 import QtGui
 import mainFrame
 
 def main():
+    """ Run the main Application within a MainFrame"""
+
     #creates the base Qt Application
     app = QtGui.QApplication(sys.argv)
 
