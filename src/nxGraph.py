@@ -6,6 +6,35 @@ import dialogs
 from copy import deepcopy
 
 class GraphCanvas(FigureCanvas):
+    """Provides the backend functionality for the graph as well
+    as the actually GUI representation of the graph.
+
+    Methods:
+        clearScreen
+        clearAll
+        redrawGraph
+        addNode
+        removeNode
+        addEdge
+        createEdgeLabels
+        removeEdge
+        getNewNode
+        getRemoveNode
+        displayNode
+        getNewEdge
+        getRemoveEdge
+        checkAndRemoveLinks
+        displayEdge
+        pushToUndo
+        pushToRedo
+        clearRedo
+        clearStacks
+        undo
+        redo
+        checkLinkCompat
+        findNode
+    """
+
     
     def __init__(self, parent=None, width=5, height=4, dpi=100):
 

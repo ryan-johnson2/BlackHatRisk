@@ -3,32 +3,46 @@ from PyQt4.QtCore import *
 import resources
 
 class Dialog(QDialog):
+    """Provides the base for each graphical dialog
+
+    Methods:
+        setTitle
+        addWidgets
+        addButtons
+        getData
+    """
 
     def __init__(self, nodes = [], parent = None):
         super(Dialog, self).__init__(parent)
-        self.layout = QVBoxLayout(self)
-        self.nodes = nodes
+        self.layout = QVBoxLayout(self) # set the layout of the dialog to VBox
+        self.nodes = nodes 
 
     def setTitle(self, name):
+        """Set the window title"""
         self.setWindowTitle(name)
 
     def addWidgets(self):
+        """Add widgets to the VBox"""
         pass
 
     def addButtons(self):
-        buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, Qt.Horizontal, self)
-        buttons.accepted.connect(self.accept)
+        """add the ok and cancel buttons to the VBox"""
+        buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, Qt.Horizontal, self) # create buttons
+        buttons.accepted.connect(self.accept) # set the action of the buttons
         buttons.rejected.connect(self.reject)
-        self.layout.addWidget(buttons)
+        self.layout.addWidget(buttons) # add the buttons to the VBox
 
     def getData(self):
+        """get the data returned from the Dialog"""
         pass
 
     @staticmethod
     def getDataDialog(self, nodes = []):
+        """build the dialog and get the data from it"""
         pass
 
 class AddNode(Dialog):
+    """Create a dialog to add a node"""
 
     def __init__(self, nodes = [], parent = None):
         super(AddNode, self).__init__(nodes, parent)
@@ -38,32 +52,33 @@ class AddNode(Dialog):
 
     def addWidgets(self):
         self.nodeNamelbl = QLabel(self)
-        self.nodeNamelbl.setText("Node Name:")
-        self.nodeName = QLineEdit(self)
+        self.nodeNamelbl.setText("Node Name:") # ass a label that shows Node Name:
+        self.nodeName = QLineEdit(self) # create a text entry box
         self.nodeName.setObjectName("Node Name")
 
         self.storagelbl = QLabel(self)
         self.storagelbl.setText("Storage:")
-        self.storage = QComboBox(self)
+        self.storage = QComboBox(self) # create a dropdown selection
         
         for storeDev in resources.storage:
-            self.storage.addItem(storeDev)
+            self.storage.addItem(storeDev) # get all possible storage devices and add them to the dropdown
 
+        # add all widgets to the main VBox
         self.layout.addWidget(self.nodeNamelbl)
         self.layout.addWidget(self.nodeName)
         self.layout.addWidget(self.storagelbl)
         self.layout.addWidget(self.storage)
 
     def getData(self):
-        name = str(self.nodeName.text())
-        storage = str(self.storage.currentText())
+        name = str(self.nodeName.text()) # get the name in the text box
+        storage = str(self.storage.currentText()) # get teh selected storage device
         return (name, storage)
 
     @staticmethod
     def getDataDialog(nodes = [], parent = None):
-        dialog = AddNode(parent)
-        result = dialog.exec_()
-        nodeData = dialog.getData()
+        dialog = AddNode(parent) # create instance of add node
+        result = dialog.exec_() # run the class
+        nodeData = dialog.getData() # get the data selected
         return (nodeData, result == QDialog.Accepted)
 
 class RemoveNode(Dialog):
@@ -80,7 +95,7 @@ class RemoveNode(Dialog):
         self.nodeName = QComboBox(self)
         
         for node in self.nodes:
-            self.nodeName.addItem(node)
+            self.nodeName.addItem(node) # create a dropdown selection of nodes
 
         self.layout.addWidget(self.nodeNamelbl)
         self.layout.addWidget(self.nodeName)
