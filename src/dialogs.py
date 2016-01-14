@@ -216,7 +216,6 @@ class AddEdge(Dialog):
         nodeName2 = str(self.node2.currentText())
         risk = str(5)
         node1 = self.findNode(nodeName1)[1]['info']
-        print node1
         node2 = self.findNode(nodeName2)[1]['info']
         link = Link(node1, node2, name, protocol, risk)
         return link

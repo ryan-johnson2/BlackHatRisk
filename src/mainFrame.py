@@ -3,6 +3,9 @@ import networkItemsTree
 import nxGraph
 import XMLfunctions as xml
 import resources
+from node import Node
+from link import Link
+
 
 class MainFrame(QtGui.QMainWindow):
     """Creates the main frame of the GUI  which will contain
@@ -221,18 +224,19 @@ class MainFrame(QtGui.QMainWindow):
             # calls the XMLFunctions to create an xml file at the given path
             xml.create(saveF)
 
-            for node in nodes: # add each node to the xml file
-                name = node[0]
-                storage = node[1]['storage']
+            for item in nodes: # add each node to the xml file
+                node = item[1]['info']
+                name = node.name
+                storage = node.storage
                 xml.addNode(saveF, name, storage)
 
-            for link in links: # add each link to the xml file
-                data = link[2]
-                name = data['name']
-                protocol = data['protocol']
-                node1 = link[0]
-                node2 = link[1]
-                risk = data['risk']
+            for item in links: # add each link to the xml file
+                link = item[2]['info']
+                name = link.name
+                protocol = link.proto
+                node1 = link.n1.name
+                node2 = link.n2.name
+                risk = link.risk
                 xml.addLink(saveF, name, protocol, node1, node2, risk)
 
         except IOError: # displays a warning if an incorrect file is chosen
@@ -250,20 +254,26 @@ class MainFrame(QtGui.QMainWindow):
             #clear the current graph
             self.makeNew() # create a blank graph
 
-            for node in nodes: # add each node to the graph
-                if node != None:
-                    name = node[0]
-                    storage = node[1]
-                    self.networkBuild.addNode(name, storage)
+            for item in nodes: # add each node to the graph
+                if item != None:
+                    name = item[0]
+                    storage = item[1]
+                    node = Node(name, storage)
+                    self.networkBuild.addNode(node)
 
-            for link in links: # add each link to the graph
-                if link != None:
-                    name = link[0]
-                    risk = link[1]
-                    protocol = link[2]
-                    node1 = link[3]
-                    node2 = link[4]
-                    self.networkBuild.addEdge(name, protocol, node1, node2, risk)
+            nodes = self.networkBuild.graph.nodes(data = True)
+
+            for item in links: # add each link to the graph
+                if item != None:
+                    name = item[0]
+                    risk = item[1]
+                    protocol = item[2]
+                    nodeName1 = item[3]
+                    nodeName2 = item[4]
+                    node1 = self.networkBuild.findNode(nodeName1)[1]['info']
+                    node2 = self.networkBuild.findNode(nodeName2)[1]['info']
+                    link = Link(node1, node2, name, protocol, risk)
+                    self.networkBuild.addEdge(link)
 
         except IOError: # show an error dialog when a wrong file is selected
             dialog = QtGui.QMessageBox.warning(self, "Incorrect File Selection", "You selected no file or an incorrect file type!")
