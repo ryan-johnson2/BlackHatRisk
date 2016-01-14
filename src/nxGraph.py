@@ -4,6 +4,7 @@ from matplotlib.figure import Figure
 import networkx as nx
 import dialogs
 from copy import deepcopy
+import node, link
 
 class GraphCanvas(FigureCanvas):
     """Provides the backend functionality for the graph as well
@@ -95,29 +96,29 @@ class GraphCanvas(FigureCanvas):
         self.draw() # draw the figure to the screen
 
     #add a node to the graph
-    def addNode(self, node, storage):
+    def addNode(self, node):
         """add a node to the graph and display it on the UI"""
         self.clearRedo() # clear the redo stack
         self.pushToUndo() # push the state to the undo stack
-        self.graph.add_node(node, storage = storage) # add the node to the graph
-        self.labels[node] = node # add the label to labels
+        self.graph.add_node(node.name, info = node) # add the node to the graph
+        self.labels[node.name] = node.name # add the label to labels
         self.redrawGraph() # redraw the graph to the screen
 
-    def removeNode(self, node):
+    def removeNode(self, nodeName):
         """remove a node from the graph and display on the UI"""
         self.clearRedo()
         self.pushToUndo()
-        self.checkAndRemoveLinks(node) # remove any links that were attached to the node
-        self.graph.remove_node(node) # remove the node
-        del self.labels[node] # delete the label
+        self.checkAndRemoveLinks(nodeName) # remove any links that were attached to the node
+        self.graph.remove_node(nodeName) # remove the node
+        del self.labels[nodeName] # delete the label
         self.redrawGraph()
 
     #add an edge to the graph
-    def addEdge(self, name, protocol ,node1, node2, risk):
+    def addEdge(self, link):
         """add an edge to the graph and display on the UI"""
         self.clearRedo()
         self.pushToUndo()
-        self.graph.add_edge(node1, node2, key = name, name = name, protocol = protocol, risk = risk) # add the edge to the graph
+        self.graph.add_edge(link.n1.name, link.n2.name, key = link.name, info = link) # add the edge to the graph
         self.createEdgeLabels() # create the edge labels
         self.redrawGraph()
 
@@ -128,18 +129,19 @@ class GraphCanvas(FigureCanvas):
         for edge in edges: # add each edge into the edgeLabels dict
             # the logic will create multiple lables in the case of multiple edges
             # between the same nodes
+            link = edge[2]['info']
             if (edge[0], edge[1]) in self.edgeLabels.keys():
-                self.edgeLabels[(edge[0], edge[1])] += ",\n" + edge[2]['name']
+                self.edgeLabels[(edge[0], edge[1])] += ",\n" + link.name
             elif (edge[1], edge[0]) in self.edgeLabels.keys():
-                self.edgeLabels[(edge[1], edge[0])] += ",\n" + edge[2]['name']
+                self.edgeLabels[(edge[1], edge[0])] += ",\n" + link.name
             else:
-                self.edgeLabels[(edge[0], edge[1])] = edge[2]['name']
+                self.edgeLabels[(edge[0], edge[1])] = link.name
 
-    def removeEdge(self, node1, node2):
+    def removeEdge(self, nodeName1, nodeName2):
         """remove an edge from the graph and display on the UI"""
         self.clearRedo()
         self.pushToUndo()
-        self.graph.remove_edge(node1, node2) # remove the edge
+        self.graph.remove_edge(nodeName1, nodeName2) # remove the edge
         self.createEdgeLabels() # recreate the edge labels
         self.redrawGraph()
 
@@ -148,28 +150,29 @@ class GraphCanvas(FigureCanvas):
         """creates a graphical dialog to add a node to the graph"""
         node, ok = dialogs.AddNode.getDataDialog() # calls the add node dialog from dialogs
         if ok:
-            self.addNode(node[0], node[1]) # adds the new node if ok is hit on the dialog
+            self.addNode(node) # adds the new node if ok is hit on the dialog
 
     #dialog to remove a node from the graph
     def getRemoveNode(self):
         """creates a graphical dialog to remove a node from the graph"""
         currNodes = self.graph.nodes() # gets the current nodes
-        node, ok = dialogs.RemoveNode.getDataDialog(currNodes)
+        nodeName, ok = dialogs.RemoveNode.getDataDialog(currNodes)
         if ok:
-            self.removeNode(node) # removes the selected node
+            self.removeNode(nodeName) # removes the selected node
 
     def displayNode(self):
         """creates a graphical dialog to display a nodes information
         which will be shown in a seperate dialog"""
         currNodes = self.graph.nodes()
-        node, ok = dialogs.DisplayNode.getDataDialog(currNodes)
+        nodeName, ok = dialogs.DisplayNode.getDataDialog(currNodes)
         if ok:
-            name = node
+            name = nodeName
             storage = "Unknown"
 
             for item in self.graph.nodes(data = True): # finds the data of the selected node
-                if item[0] == node:
-                    storage = item[1]['storage'] 
+                node = item[1]['info']
+                if node.name == nodeName:
+                    storage = node.storage
 
             # displays the selected nodes information in a message box
             message = QtGui.QMessageBox.information(self, "View Node", "Name: {0}\nStorage: {1}".format(name, storage))
@@ -178,15 +181,11 @@ class GraphCanvas(FigureCanvas):
     def getNewEdge(self):
         """creates a graphical dialog to create a new edge and ensures
         that the edge is between two compatible nodes"""
-        currNodes = self.graph.nodes()
-        nodes, ok = dialogs.AddEdge.getDataDialog(currNodes)
+        currNodes = self.graph.nodes(data = True)
+        link, ok = dialogs.AddEdge.getDataDialog(currNodes)
 
-        n1 = self.findNode(nodes[2]) # finds node information
-        n2 = self.findNode(nodes[3])
-        proto = nodes[1] # gets the protocol the user selected
-
-        if ok and self.checkLinkCompat(n1, n2, proto): # checks compatability of the nodes and protocol and adds the edge if possible
-            self.addEdge(nodes[0], nodes[1], nodes[2], nodes[3], nodes[4])
+        if ok and self.checkLinkCompat(link.n1, link.n2, link.proto): # checks compatability of the nodes and protocol and adds the edge if possible
+            self.addEdge(link)
         else:
             message = QtGui.QMessageBox.warning(self, "Black Hat Risk", "Incompatible Link between storage devices!")
 
@@ -194,9 +193,9 @@ class GraphCanvas(FigureCanvas):
     def getRemoveEdge(self):
         """creates a graphical dialog to remove an edge from the graph"""
         currEdges = self.graph.edges(data = True) # gets the current edges and their data
-        nodes, ok = dialogs.RemoveEdge.getDataDialog(currEdges)
+        (node1, node2), ok = dialogs.RemoveEdge.getDataDialog(currEdges)
         if ok:
-            self.removeEdge(nodes[0], nodes[1]) # removes the edge
+            self.removeEdge(node1, node2) # removes the edge
 
     def checkAndRemoveLinks(self, node):
         """checks for links attached to a node and removes them"""
@@ -209,22 +208,21 @@ class GraphCanvas(FigureCanvas):
     def displayEdge(self):
         """creates a graphical dialog to select an edge and display its information"""
         currEdges = self.graph.edges(data = True)
-        edge, ok = dialogs.DisplayEdge.getDataDialog(currEdges)
+        (nodeName1, nodeName2), ok = dialogs.DisplayEdge.getDataDialog(currEdges)
         if ok: # gets teh user selected edge
-            node1 = edge[0]
-            node2 = edge[1]
             name = "Unknown"
             protocol = "Unknown"
             risk = "Unknown"
 
             for item in self.graph.edges(data = True): # finds all the data for the edge selected
-                if (item[0] == node1 and item[1] == node2) or (item[1] == node1 and item[0] == node2):
-                    name = item[2]['name']
-                    protocol = item[2]['protocol']
-                    risk = item[2]['risk']
+                link = item[2]['info']
+                if (item[0] == nodeName1 and item[1] == nodeName2) or (item[1] == nodeName1 and item[0] == nodeName2):
+                    name = link.name
+                    protocol = link.proto
+                    risk = link.risk
 
             # display the data for the edge in a message box
-            message = QtGui.QMessageBox.information(self, "View Edge", "Name: {0}\nNode 1: {1}\nNode 2: {2}\nProtocol: {3}\nRisk: {4}".format(name, node1, node2, protocol, risk))
+            message = QtGui.QMessageBox.information(self, "View Edge", "Name: {0}\nNode 1: {1}\nNode 2: {2}\nProtocol: {3}\nRisk: {4}".format(name, nodeName1, nodeName2, protocol, risk))
 
     def pushToUndo(self):
         """gets the current state of the graph and pushes it to the undo stack"""
@@ -274,7 +272,7 @@ class GraphCanvas(FigureCanvas):
 
     def checkLinkCompat(self, node1, node2, proto):
         """checks to ensure the protocol is compatible for use between the two nodes"""
-        stores = [node1[1]["storage"], node2[1]["storage"]] # create a list of the storage devices for the two nodes
+        stores = [node1.storage, node2.storage] # create a list of the storage devices for the two nodes
 
         # follow the logic to ensure that the protocol and nodes storage devices are compatibile
         if stores[0] == "Paper" and stores[1] == "Paper":

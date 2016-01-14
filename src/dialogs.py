@@ -1,6 +1,8 @@
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 import resources
+from node import Node
+from link import Link
 
 class Dialog(QDialog):
     """Provides the base for each graphical dialog
@@ -30,7 +32,13 @@ class Dialog(QDialog):
         buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, Qt.Horizontal, self) # create buttons
         buttons.accepted.connect(self.accept) # set the action of the buttons
         buttons.rejected.connect(self.reject)
-        self.layout.addWidget(buttons) # add the buttons to the VBox
+        self.layout.addWidget(buttons) # add the buttons to the 
+
+    def findNode(self, name):
+        """find a node and its data by name"""
+        for node in self.nodes: # check thorugh all nodes and their data
+            if node[0] == name:
+                return node # return the node with the correct name
 
     def getData(self):
         """get the data returned from the Dialog"""
@@ -72,14 +80,15 @@ class AddNode(Dialog):
     def getData(self):
         name = str(self.nodeName.text()) # get the name in the text box
         storage = str(self.storage.currentText()) # get teh selected storage device
-        return (name, storage)
+        node = Node(name, storage)
+        return node
 
     @staticmethod
     def getDataDialog(nodes = [], parent = None):
         dialog = AddNode(parent) # create instance of add node
         result = dialog.exec_() # run the class
-        nodeData = dialog.getData() # get the data selected
-        return (nodeData, result == QDialog.Accepted)
+        node = dialog.getData() # get the data selected
+        return (node, result == QDialog.Accepted) # will return a node object
 
 class RemoveNode(Dialog):
 
@@ -107,8 +116,8 @@ class RemoveNode(Dialog):
     def getDataDialog(nodes = [], parent = None):
         dialog = RemoveNode(nodes, parent)
         result = dialog.exec_()
-        nodeData = dialog.getData()
-        return (nodeData, result == QDialog.Accepted)
+        nodeName = dialog.getData()
+        return (nodeName, result == QDialog.Accepted) # returns the name of a node
 
 class DisplayNode(Dialog):
 
@@ -137,8 +146,8 @@ class DisplayNode(Dialog):
     def getDataDialog(nodes = [], parent = None):
         dialog = DisplayNode(nodes, parent)
         result = dialog.exec_()
-        nodeData = dialog.getData()
-        return (nodeData, result == QDialog.Accepted)
+        nodeName = dialog.getData()
+        return (nodeName, result == QDialog.Accepted) # returns a node name
 
 class AddEdge(Dialog):
 
@@ -169,7 +178,7 @@ class AddEdge(Dialog):
         self.node1 = QComboBox(self)
 
         for node in self.nodes:
-            self.node1.addItem(node)
+            self.node1.addItem(node[0])
 
         #node 2 of the edge
         self.node2lbl = QLabel(self)
@@ -177,7 +186,7 @@ class AddEdge(Dialog):
         self.node2 = QComboBox(self)
         
         for node in self.nodes:
-            self.node2.addItem(node)
+            self.node2.addItem(node[0])
 
         #risk of the edge
         self.risklbl = QLabel(self)
@@ -203,17 +212,21 @@ class AddEdge(Dialog):
     def getData(self):
         name = str(self.linkName.text())
         protocol = str(self.protocol.currentText())
-        node1 = str(self.node1.currentText())
-        node2 = str(self.node2.currentText())
+        nodeName1 = str(self.node1.currentText())
+        nodeName2 = str(self.node2.currentText())
         risk = str(5)
-        return (name, protocol, node1, node2, risk)
+        node1 = self.findNode(nodeName1)[1]['info']
+        print node1
+        node2 = self.findNode(nodeName2)[1]['info']
+        link = Link(node1, node2, name, protocol, risk)
+        return link
 
     @staticmethod
     def getDataDialog(nodes, parent = None):
         dialog = AddEdge(nodes, parent)
         result = dialog.exec_()
-        nodes = dialog.getData()
-        return (nodes, result == QDialog.Accepted)
+        link = dialog.getData()
+        return (link, result == QDialog.Accepted)
 
 class RemoveEdge(Dialog):
 
@@ -229,7 +242,8 @@ class RemoveEdge(Dialog):
         self.edge = QComboBox(self)
         
         for edge in self.nodes:
-            self.edge.addItem(edge[2]["name"])
+            link = edge[2]['info']
+            self.edge.addItem(link.name)
 
         self.layout.addWidget(self.edgelbl)
         self.layout.addWidget(self.edge)
@@ -238,12 +252,13 @@ class RemoveEdge(Dialog):
         name = str(self.edge.currentText())
         
         for edge in self.nodes:
-            if edge[2]['name'] == name:
-                node1 = edge[0]
-                node2 = edge[1]
+            link = edge[2]['info']
+            if  link.name == name:
+                nodeName1 = edge[0]
+                nodeName2 = edge[1]
                 break
 
-        return (node1, node2)
+        return (nodeName1, nodeName2)
 
     @staticmethod
     def getDataDialog(nodes, parent = None):
@@ -266,7 +281,8 @@ class DisplayEdge(Dialog):
         self.edge = QComboBox(self)
         
         for edge in self.nodes:
-            self.edge.addItem(edge[2]["name"])
+            link = edge[2]['info']
+            self.edge.addItem(link.name)
 
         self.layout.addWidget(self.edgelbl)
         self.layout.addWidget(self.edge)
@@ -275,12 +291,13 @@ class DisplayEdge(Dialog):
         name = str(self.edge.currentText())
         
         for edge in self.nodes:
-            if edge[2]['name'] == name:
-                node1 = edge[0]
-                node2 = edge[1]
+            link = edge[2]['info']
+            if link.name == name:
+                nodeName1 = edge[0]
+                nodeName2 = edge[1]
                 break
 
-        return (node1, node2)
+        return (nodeName1, nodeName2)
 
     @staticmethod
     def getDataDialog(nodes, parent = None):
