@@ -1,6 +1,6 @@
 class Link:
 
-    def __init__(self, node1, node2, name, protocol, risk):
+    def __init__(self, node1, node2, name = "Unnamed Link", protocol = "Unknown Protocol", risk = 5):
         self.n1 = node1
         self.n2 = node2
         self.name = name

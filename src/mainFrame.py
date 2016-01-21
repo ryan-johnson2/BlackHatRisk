@@ -5,6 +5,7 @@ import XMLfunctions as xml
 import resources
 from node import Node
 from link import Link
+import dialogs
 
 
 class MainFrame(QtGui.QMainWindow):
@@ -280,7 +281,14 @@ class MainFrame(QtGui.QMainWindow):
 
     def makeNew(self):
         """clears the network building area of all information"""
-        self.networkBuild.clearAll()
+        # ask if the user wants to save their work
+        saveAns, ok = dialogs.SaveOnNew.getDataDialog()
+        if ok:
+            if saveAns == "Yes" :
+                self.saveFile()
+            elif saveAns == "Cancel":
+                return
+            self.networkBuild.clearAll()
 
     def showHelp(self):
         """shows a help dialog"""

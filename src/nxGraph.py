@@ -90,7 +90,7 @@ class GraphCanvas(FigureCanvas):
     def redrawGraph(self):
         """redraw the graph to the UI"""
         self.pos = self.setLayout(self.graph) # set the graph layout
-        nx.draw(self.graph, self.pos, ax = self.axes, labels = self.labels) # draw the graph to the screen
+        nx.draw(self.graph, self.pos, ax = self.axes, labels = self.labels, node_color = "w", node_shape = "s", alpha = 0.75) # draw the graph to the screen
         # draw the edge labels
         nx.draw_networkx_edge_labels(self.graph, self.pos, edge_labels = self.edgeLabels, ax = self.axes, label_pos = 0.5)
         self.draw() # draw the figure to the screen
@@ -182,6 +182,10 @@ class GraphCanvas(FigureCanvas):
         """creates a graphical dialog to create a new edge and ensures
         that the edge is between two compatible nodes"""
         currNodes = self.graph.nodes(data = True)
+        if len(currNodes) < 2: # ensures that 2 or more nodes are present in order ot make an edge
+            message = QtGui.QMessageBox.warning(self, "Black Hat Risk", "Not enough nodes to create an edge!")
+            return
+
         link, ok = dialogs.AddEdge.getDataDialog(currNodes)
 
         if ok and self.checkLinkCompat(link.n1, link.n2, link.proto): # checks compatability of the nodes and protocol and adds the edge if possible

@@ -417,4 +417,36 @@ class AddStorage(Dialog):
         nodeData = dialog.getData()
         return (nodeData, result == QDialog.Accepted)
 
+class SaveOnNew(Dialog):
+
+    def __init__(self, nodes = [], parent = None):
+        super(SaveOnNew, self).__init__(nodes, parent)
+        self.setTitle("Save")
+        self.addWidgets()
+        self.addButtons()
+
+    def addWidgets(self):
+        self.savelbl = QLabel(self)
+        self.savelbl.setText("Would you like to save") # ass a label that shows Node Name:
+
+        self.save = QComboBox(self) # create a dropdown selection
+        self.save.addItem("Yes") # get all possible storage devices and add them to the dropdown
+        self.save.addItem("No")
+        self.save.addItem("Cancel")
+
+        # add all widgets to the main VBox
+        self.layout.addWidget(self.savelbl)
+        self.layout.addWidget(self.save)
+
+    def getData(self):
+        ans = str(self.save.currentText()) # get teh selected storage device
+        return ans
+
+    @staticmethod
+    def getDataDialog(nodes = [], parent = None):
+        dialog = SaveOnNew(parent) # create instance of add node
+        result = dialog.exec_() # run the class
+        ans = dialog.getData() # get the data selected
+        return (ans, result == QDialog.Accepted) # will return a node object
+
 
