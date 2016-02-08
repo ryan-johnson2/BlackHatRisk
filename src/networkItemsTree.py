@@ -1,6 +1,8 @@
 from PyQt4 import QtGui, QtCore
-import networkItems
-import resources
+import networkItems, resources
+
+#TODO 
+#show all the information for links and nodes in the tree
 
 class NetworkItemsTree(QtGui.QTreeWidget):
     """Creates a tree of network items

@@ -143,7 +143,7 @@ class MainFrame(QtGui.QMainWindow):
         addEdgeAction = QtGui.QAction('&Add Edge', self)        
         addEdgeAction.setStatusTip('Add Edge')
         addEdgeAction.setShortcut('Ctrl+e')
-        addEdgeAction.triggered.connect(lambda: self.networkBuild.getNewEdge())
+        addEdgeAction.triggered.connect(lambda: self.networkBuild.getNewLink())
         modifyMenu.addAction(addEdgeAction)
 
         # set the remove node action and add to the modify menu
@@ -157,7 +157,7 @@ class MainFrame(QtGui.QMainWindow):
         removeEdgeAction = QtGui.QAction('&Remove Edge', self)        
         removeEdgeAction.setStatusTip('Remove Edge')
         removeEdgeAction.setShortcut('Ctrl+d')
-        removeEdgeAction.triggered.connect(lambda: self.networkBuild.getRemoveEdge())
+        removeEdgeAction.triggered.connect(lambda: self.networkBuild.getRemoveLink())
         modifyMenu.addAction(removeEdgeAction)
 
         # set the remove protocol action and add to the modify menu
@@ -195,7 +195,7 @@ class MainFrame(QtGui.QMainWindow):
         viewEdgeAction = QtGui.QAction('&View Edge', self)        
         viewEdgeAction.setStatusTip('View Edge')
         viewEdgeAction.setShortcut('Ctrl+r')
-        viewEdgeAction.triggered.connect(lambda: self.networkBuild.displayEdge())
+        viewEdgeAction.triggered.connect(lambda: self.networkBuild.displayLink())
         viewMenu.addAction(viewEdgeAction)
 
         # set the undo action and add to the edit menu
@@ -226,18 +226,19 @@ class MainFrame(QtGui.QMainWindow):
             xml.create(saveF)
 
             for item in nodes: # add each node to the xml file
-                node = item[1]['info']
-                name = node.name
-                storage = node.storage
+                node = item[1]['obj']
+                name = node.getName()
+                storage = node.getStorage()
                 xml.addNode(saveF, name, storage)
 
             for item in links: # add each link to the xml file
-                link = item[2]['info']
-                name = link.name
-                protocol = link.proto
-                node1 = link.n1.name
-                node2 = link.n2.name
-                risk = link.risk
+                link = item[2]['obj']
+                name = link.getName()
+                protocol = link.getProtocol()
+                (n1, n2) = link.getNodes()
+                node1 = n1.getName()
+                node2 = n2.getName()
+                risk = link.getRisk()
                 xml.addLink(saveF, name, protocol, node1, node2, risk)
 
         except IOError: # displays a warning if an incorrect file is chosen
