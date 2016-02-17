@@ -1,10 +1,13 @@
 #library dependencies
-import sys
 from PyQt4 import QtGui
 import mainFrame
+import sys
 
 def main():
-    """ Run the main Application within a MainFrame"""
+    """The main function will instantiate the main QT Application
+    that runs the whole application. The main function calls on the
+    mainFrame class that we created which is run by the application.
+    This function allows clean exiting of the overall application"""
 
     #creates the base Qt Application
     app = QtGui.QApplication(sys.argv)
