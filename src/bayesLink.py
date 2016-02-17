@@ -1,9 +1,12 @@
 from Lea import *
+from WirelessAlgorithm import * 
+from link import *
 
 class bayesLink:
     
-    def __init__(self, name):
-        self._name = name
+    def __init__(self, link):
+        self._link = link
+        self._intialRisk = WirelessAlgorithm.wirelessAlgorithm(self._link)
 
 
         #TODO
@@ -18,7 +21,19 @@ class bayesLink:
         This feeds to comms IDed as subversive, with another input of amount of similar traffic (high, medium, low may be best)
         this breaks into risk value
         question remains: how to display the value
+
+
+        Steps: 
+        1. [x]Alter tuckers algo to allow values from external source 
+        2. []modify links in gui[] and xml/link class [x]
+        3. [x]import value from tucker's algo
+        4. []rinse, lather, repeat with davids algo
+        5. []create lea nodes with both algos
+        6. []create rest of bayes network
+        7. []interpret output values
+
+
+
 '''
-        #link input values
-        #adversary input values
-        #
+
+        

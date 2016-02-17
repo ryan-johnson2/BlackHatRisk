@@ -10,7 +10,7 @@ def create(fname):
 	#stackoverflow.com/questions/13299427/python-functions-call-by-reference
 
 """Adds a new link to the network"""
-def addLink(fname, name, protocol, node1, node2, risk):
+def addLink(fname, name, protocol, node1, node2, riskm sizeOfData, maxFileSize, linkSecurity, peakHours):
 	#add risk subelement with default value
 	tree = ET.parse(fname)
 	root = tree.getroot() #finds proper link to create
@@ -24,6 +24,14 @@ def addLink(fname, name, protocol, node1, node2, risk):
 	node1Tag.text = node1 #adds parent node 1
 	node2Tag = ET.SubElement(newTag, 'node2')
 	node2Tag.text = node2 #adds parent node 2
+	sizeTag = ET.SubElement(newTag, 'sizeOfData')
+	sizeTag.text = sizeOfData
+	maxTag = ET.SubElement(newTag, 'maxFileSize')
+	maxTag.text = maxFileSize
+	secTag = ET.SubElement(newTag, 'LinkSecurity')
+	secTag.text = linkSecurity
+	peakTag = ET.SubElement(newTag, 'PeakHours?')
+	peakTag.text = peakHours
 	tree.write(fname) #writes to the xml file
 """Adds a node to the network"""
 def addNode(fname, name, storage):
@@ -61,7 +69,7 @@ def returnLinks(fname):
 	returnList = list()
 	for links in root.findall("links"): #parses though links
 		for link in links.findall("Name"): #finds the proper link
-			returnList.append(tuple([link.attrib["name"], link[0].text, link[1].text, link[2].text, link[3].text])) #adds the link name, risk value, protocol, and parent nodes to a list
+			returnList.append(tuple([link.attrib["name"], link[0].text, link[1].text, link[2].text, link[3].text], link[4].text, link[5].text, link[6].text, link[7].text)) #adds the link name, risk value, protocol, and parent nodes to a list
 	#print returnList
 	return returnList #returns list of information for interpretation
 """Pulls all the information on a node out of the XML files into a readable format"""

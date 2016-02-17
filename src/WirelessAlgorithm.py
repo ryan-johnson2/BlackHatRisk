@@ -1,3 +1,5 @@
+from link import *
+
 #Algorithm for Wireless Links
 #Bluetooth, wifi, etc
 """
@@ -33,34 +35,35 @@ TO DO:
   Defaults are available if not specified by the user for the given iteration. 
 
 """
+"""
 def checkUserOverride(link):
   if(link[2] == ""): print('No User Override Detected. Using Default Values')
   else: print('User override detected! Using specific values.')
-
+"""
 
 
 def wirelessAlgorithm(link):
 
 	#Basic Information From the Link
 	risk = 0  #Probability of Being Detected by Unwanted Personnel. 0 - 1
-	information = link[2]
+	#information = link[2]
 	guaranteedDetection = 10 #At which point can just about anyone in the AO detect / sweep the Wireless link we are using?
 	print('Beginning Risk Algorithm')
-	if(information['isScanning'] == "no"): return "Only risk is in Physical Detection."
+	if(link.getAdditional(isScanning) == False): return "Only risk is in Physical Detection." #change this to include an actual value
 
 	#Begin Calculating Actual Risk Values
 	#If the network is not being scanned, then risk is substantially reduced. Only chance of detection occurs if
 	#the initiating individual is physically caught utilizing the sending system
 	#Awaiting Class Definition of datafields
-	if (information['isScanning'] == "yes"):
-		numberOfUsers = information['numUsers']
-		dataIsSimiliar = information['dataIsSimiliar']
-		peakHours = information['peakHours']
-		sizeOfData = information['sizeOfTransferredData']
-		linkType = information['LinkType']
-		maxFileSize = information['maxFileSize']
-		linkSecurity = information['linkSecurity']
-		scanTime = information['scanTime'] #Time we estimate it takes for 'enemy' to scan their network
+	if (link.getAdditional(isScanning)):
+		numberOfUsers = link.getAdditional(numberOfUsers)
+		dataIsSimiliar = link.getAdditional(dataIsSimiliar)
+		peakHours = link.getPeakHours()
+		sizeOfData = link.getSizeOfData()
+		linkType = link.getProtocol()
+		maxFileSize = link.getMaxFileSize()
+		linkSecurity = link.getLinkSecurity()
+		scanTime = link.getAdditional(scanTime) #Time we estimate it takes for 'enemy' to scan their network
 		transferTime = 0
 		linkSpeed = 0
 
@@ -114,7 +117,8 @@ def wirelessAlgorithm(link):
         else:
 			print('Unknown noise statistics concerning link.')
 	return risk
-
+"""
+need to be updated with actual link class
 def test():
 	test1 = ("","", {"isScanning" : "yes", "sizeOfTransferredData" : 5, "LinkType" : "802.11A", "maxFileSize" : 64, "signalStrength" : 5, "scanTime" : 3600, "numUsers" : 100, "peakHours" : False, "dataIsSimiliar" : True, "linkSecurity" : "WEP"})
 	print ('The risk for test link one is: ' + str(wirelessAlgorithm(test1)))
@@ -126,3 +130,5 @@ def test():
 	print ('The risk for test link four is: ' + str(wirelessAlgorithm(test4)))
 	test5 = ("","", {"isScanning" : "yes", "sizeOfTransferredData" : 54, "LinkType" : "Bluetooth", "maxFileSize" : 64, "signalStrength" : 5, "scanTime" : 3600, "numUsers" : 100, "peakHours" : False, "dataIsSimiliar" : True,"linkSecurity" : "WPA"})
 	print ('The risk for test link five is: ' + str(wirelessAlgorithm(test5)))
+
+"""
