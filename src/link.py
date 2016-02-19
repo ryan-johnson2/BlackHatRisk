@@ -1,6 +1,11 @@
 class Link:
-    """the datastructure representing a link in the network diagram"""
+    """The Link class is used to create Link objects which are used to store
+    information about network links. These Link objects will be the underlying
+    data structures stored in the Graph class to access information about
+    Link objects. The Link class will also contain a risk algorithm, depent ont
+    the information about the link to determine its risk."""
     
+
     def __init__(self, node1, node2, name, protocol, sizeOfData, maxFileSize, linkSecurity, peakHours, risk = -1):
         """initialize a link with two nodes, a name, a protocol and a risk value"""
         self._n1 = node1 # private variable storing the first node which is of type Node
@@ -14,7 +19,7 @@ class Link:
         self._peak = peakHours #returns boolean value if the link transmits during peak hours
         self._additional = {} # private dictionary to store additional data
                               #by default this includes {numberOfUsers, dataIsSimilar, scanTime, isScanning}
-
+        #self._riskAlgorithm = ???
 
     def getNodes(self):
         """return a tuple of the two nodes assigned to the link"""
