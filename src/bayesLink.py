@@ -1,12 +1,12 @@
-from Lea import *
+from lea import *
 from WirelessAlgorithm import * 
 from link import *
 
-class bayesLink:
+class BayesLink:
     
     def __init__(self, link):
         self._link = link
-        self._intialRisk = WirelessAlgorithm.wirelessAlgorithm(self._link)
+        self._intialRisk = wirelessAlgorithm(self._link)
 
 
         #TODO
@@ -35,5 +35,26 @@ class bayesLink:
 
 
 '''
+    def showRisk(self):
+        print self._intialRisk
+   
 
-        
+def test():
+    testLink = Link("n1", "n2", "test1", "802.11A", 256, 1024, "WPA", True)     
+    #(self, node1, node2, name, protocol, sizeOfData, maxFileSize, linkSecurity, peakHours, risk = -1)
+    testLink.addAdditional("numberOfUsers", 100)
+    testLink.addAdditional("dataIsSimiliar", True)
+    testLink.addAdditional("scanTime", 800)
+    testLink.addAdditional("isScanning", True)
+    #{numberOfUsers, dataIsSimiliar, scanTime, isScanning}
+    testBayes = BayesLink(testLink)
+    testBayes.showRisk()
+    testLink2 = Link("n1", "n2", "test2", "802.11A", 1025, 1024, "WEP", True)     
+    #(self, node1, node2, name, protocol, sizeOfData, maxFileSize, linkSecurity, peakHours, risk = -1)
+    testLink2.addAdditional("numberOfUsers", 3)
+    testLink2.addAdditional("dataIsSimiliar", False)
+    testLink2.addAdditional("scanTime", 800)
+    testLink2.addAdditional("isScanning", True)
+    #{numberOfUsers, dataIsSimiliar, scanTime, isScanning}
+    testBayes2 = BayesLink(testLink2)
+    testBayes2.showRisk()

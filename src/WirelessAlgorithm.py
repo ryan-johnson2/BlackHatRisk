@@ -48,22 +48,22 @@ def wirelessAlgorithm(link):
 	risk = 0  #Probability of Being Detected by Unwanted Personnel. 0 - 1
 	#information = link[2]
 	guaranteedDetection = 10 #At which point can just about anyone in the AO detect / sweep the Wireless link we are using?
-	print('Beginning Risk Algorithm')
-	if(link.getAdditional(isScanning) == False): return "Only risk is in Physical Detection." #change this to include an actual value
+	#print('Beginning Risk Algorithm')
+	if(link.getAdditional("isScanning") == False): return "Only risk is in Physical Detection." #change this to include an actual value
 
 	#Begin Calculating Actual Risk Values
 	#If the network is not being scanned, then risk is substantially reduced. Only chance of detection occurs if
 	#the initiating individual is physically caught utilizing the sending system
 	#Awaiting Class Definition of datafields
-	if (link.getAdditional(isScanning)):
-		numberOfUsers = link.getAdditional(numberOfUsers)
-		dataIsSimiliar = link.getAdditional(dataIsSimiliar)
+	if (link.getAdditional("isScanning")):
+		numberOfUsers = link.getAdditional("numberOfUsers")
+		dataIsSimiliar = link.getAdditional("dataIsSimiliar")
 		peakHours = link.getPeakHours()
 		sizeOfData = link.getSizeOfData()
 		linkType = link.getProtocol()
 		maxFileSize = link.getMaxFileSize()
 		linkSecurity = link.getLinkSecurity()
-		scanTime = link.getAdditional(scanTime) #Time we estimate it takes for 'enemy' to scan their network
+		scanTime = link.getAdditional("scanTime") #Time we estimate it takes for 'enemy' to scan their network
 		transferTime = 0
 		linkSpeed = 0
 
