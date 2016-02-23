@@ -18,7 +18,7 @@ class Link:
         self._security = linkSecurity #returns the security used by the protocol, ie. WEP, WPA, WPA2
         self._peak = peakHours #returns boolean value if the link transmits during peak hours
         self._additional = {} # private dictionary to store additional data
-                              #by default this includes {numberOfUsers, dataIsSimilar, scanTime, isScanning}
+                              #by default this includes {numberOfUsers, dataIsSimiliar, scanTime, isScanning}
         #self._riskAlgorithm = ???
 
     def getNodes(self):
