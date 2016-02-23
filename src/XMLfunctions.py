@@ -10,7 +10,7 @@ def create(fname):
 	#stackoverflow.com/questions/13299427/python-functions-call-by-reference
 
 """Adds a new link to the network"""
-def addLink(fname, name, protocol, node1, node2, riskm sizeOfData, maxFileSize, linkSecurity, peakHours):
+def addLink(fname, name, protocol, node1, node2, risk, sizeOfData, maxFileSize, linkSecurity, peakHours):
 	#add risk subelement with default value
 	tree = ET.parse(fname)
 	root = tree.getroot() #finds proper link to create
