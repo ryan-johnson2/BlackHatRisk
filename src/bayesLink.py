@@ -47,7 +47,7 @@ class BayesLink:
         bayesLinkRisk = Lea.boolProb(linkRiskToInt, 1000)
         #print bayesLinkRisk
         commsDetected = Lea.buildCPT((bayesLinkRisk & ~bayesAdversaryRisk, Lea.boolProb(min(linkRiskToInt+10, 1000), 1000)), (bayesLinkRisk & bayesAdversaryRisk, Lea.boolProb(95,100)), (~bayesLinkRisk & ~bayesAdversaryRisk, False), (~bayesLinkRisk & bayesAdversaryRisk, Lea.boolProb(1,100)))
-        print commsDetected
+        print commsDetected.pmf(True)
    
 
 def test():
@@ -61,7 +61,7 @@ def test():
     testBayes = BayesLink(testLink)
     #testBayes.showLinkRisk()
     testBayes.showTotalRisk()
-    testLink2 = Link("n1", "n2", "test2", "802.11A", 1025, 1024, "WEP", True)     
+    testLink2 = Link("n1", "n2", "test2", "802.11A", 1025, 1024, "WPA2", True)     
     #(self, node1, node2, name, protocol, sizeOfData, maxFileSize, linkSecurity, peakHours, risk = -1)
     testLink2.addAdditional("numberOfUsers", 3)
     testLink2.addAdditional("dataIsSimiliar", False)
