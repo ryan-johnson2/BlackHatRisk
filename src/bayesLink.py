@@ -12,7 +12,7 @@ class BayesLink:
     def __init__(self, link):
         self._link = link
         self._intialLinkRisk = wirelessAlgorithm(self._link)
-        self._intialAdversaryRisk = .8 #adversaryAlgorithm(***some input***)
+        self._intialAdversaryRisk = .2 #adversaryAlgorithm(***some input***)
 
 
         #TODO
@@ -26,8 +26,6 @@ class BayesLink:
         6. []create model in agenaRisk to confirm results
         6. []create rest of bayes network
         7. [x]interpret output values
-
-
 
 '''
     def showLinkRisk(self):
@@ -48,6 +46,9 @@ class BayesLink:
         #compares values given a true or false value of the variables and gives that result a boolean probability.
         #factor in number of users
         commsDetected = Lea.buildCPT((~combinedRisk & riskAdversaryScanning, Lea.boolProb(25,100)), (~combinedRisk & ~riskAdversaryScanning, False), (combinedRisk & ~riskAdversaryScanning, Lea.boolProb(min(linkRiskToInt+10, 1000), 1000)), (combinedRisk & riskAdversaryScanning, Lea.boolProb(95,100)))
+        
+        #buildCPT for traffic IDed as subversive
+        #number of users need to  goes into this, given that traffic is similar
         print commsDetected.pmf(True)
    
 
